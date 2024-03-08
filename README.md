@@ -54,8 +54,20 @@ Several sets of prompts derived from real-world licensed code from GitHub can be
 
 To evaluate a given code generation model, please run the model on the constructed prompts. An example of generating programs using CodeParrot is provided in Example_Parrot.py, please replace the paths in your setup. An example is:
 ```sh
-$ python3 Example_Parrot codeparrot/codeparrot prompts_agpl3_python_2023-03-27-21-21-29
+$ python3 Example_Parrot.py codeparrot/codeparrot prompts_agpl3_python_2023-03-27-21-21-29
 ```
+
+**Note: You need to change some part of Example_Parrot.py**
+```
+-    os.environ['HF_HOME'] = <Your_Env_Variable_Path>
+-    pipe = pipeline("text-generation", model=model_name, pad_token_id = 50256, device = 1)
++    #os.environ['HF_HOME'] = <Your_Env_Variable_Path>
++    pipe = pipeline("text-generation", model=model_name, pad_token_id = 50256, device = 0)
+
+-    root_path = <Your_Root_Path>
++    root_path = ""
+```
+
 
 Once programs have been generated and saved in the *Programs* directory, run model_eval.py to obtain the results and save them in CSV files. For example:
 ```sh
