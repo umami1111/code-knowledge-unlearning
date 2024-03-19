@@ -1,0 +1,45 @@
+
+nvidia-smi
+sudo npm install -g @dodona/dolos
+dolos --version
+
+Use python3.11
+python3.11 -m venv venv
+
+Run this first:
+python3 Example_Parrot.py codeparrot/codeparrot-small prompts_agpl3_python_2023-03-27-21-21-29
+
+Then this when its done:
+python3 model_eval.py CodeParrotSmall_agpl3_python_2023-03-27-21-21-29
+
+---
+
+# os.environ['HF_HOME'] = <Your_Env_Variable_Path>
+
+Source program doesn't exist
+python3 model_eval.py CodeParrotSmall_agpl3_python_2023-03-27-21-21-29
+
+Copying from Prompts some files
+Same file and folder from sources
+
+Move to root
+
+
+
+---
+
+Run for longer
+
+---
+1. Move Prompts/ and Source/ out of CodeIPPrompt/
+2. Keep same directory, but have just some examples (Copy ~10-20 files from Prompts/)
+3. Run same command python3 model_eval.py CodeParrotSmall_agpl3_python_2023-03-27-21-21-29
+- Compares generated files with source files
+
+TODO Measure how long it takes model_eval
+FIXME: Dolos doesn't install
+
+What we've done:
+Dolos
+fine tuning 
+Dynamic token
