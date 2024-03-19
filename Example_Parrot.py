@@ -8,8 +8,8 @@ from datetime import datetime
 
 
 def codeparrot(prompt, model_name, output_path):
-    os.environ['HF_HOME'] = <Your_Env_Variable_Path>
-    pipe = pipeline("text-generation", model=model_name, pad_token_id = 50256, device = 1)
+    # os.environ['HF_HOME'] = <Your_Env_Variable_Path>
+    pipe = pipeline("text-generation", model=model_name, pad_token_id = 50256, device = 0)
     outputs = pipe(prompt, num_return_sequences=10, max_length = 256)
     output_programs = []
     for item in outputs:
@@ -35,7 +35,7 @@ if __name__=='__main__':
     else:
         print("Usage: python3 Example_Parrot.py codeparrot/codeparrot <prompt_folder> OR python3 Example_Parrot.py codeparrot/codeparrot-small <prompt_folder>")
         exit(1)
-    root_path = <Your_Root_Path>
+    root_path = ""
     prompt_path = root_path + "Prompts" + "/" + prompt_folder + "/"
     program_path = root_path + "Programs" + "/" + prompt_folder.replace("prompts", model) + "/"
     if not os.path.exists(program_path):
