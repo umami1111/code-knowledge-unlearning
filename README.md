@@ -57,16 +57,15 @@ To evaluate a given code generation model, please run the model on the construct
 $ python3 Example_Parrot.py codeparrot/codeparrot prompts_agpl3_python_2023-03-27-21-21-29
 ```
 
-**Note: You need to change some part of Example_Parrot.py**
+To generate programs faster, give to the third argument the number of prompts to be used for generation at a time.
 ```
--    os.environ['HF_HOME'] = <Your_Env_Variable_Path>
--    pipe = pipeline("text-generation", model=model_name, pad_token_id = 50256, device = 1)
-+    #os.environ['HF_HOME'] = <Your_Env_Variable_Path>
-+    pipe = pipeline("text-generation", model=model_name, pad_token_id = 50256, device = 0)
+$ python3 Example_Parrot.py codeparrot/codeparrot-small prompts_agpl3_python_2023-03-27-21-21-29 32
+```
 
--    root_path = <Your_Root_Path>
-+    root_path = ""
-```
+As far as I can see, with 16GB GPU,
+
+- 32 prompts works for CodeParrot Small
+- only 1 prompt works for CodeParrot (meaning it cannot be batched)
 
 
 Once programs have been generated and saved in the *Programs* directory, run model_eval.py to obtain the results and save them in CSV files. For example:
