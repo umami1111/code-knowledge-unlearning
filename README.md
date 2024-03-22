@@ -62,7 +62,7 @@ To generate programs faster, give to the third argument the number of prompts to
 $ python3 Example_Parrot.py codeparrot/codeparrot-small prompts_agpl3_python_2023-03-27-21-21-29 32
 ```
 
-As far as I can see, with 16GB GPU,
+As far as I can see, with 32GB GPU,
 
 - 32 prompts works for CodeParrot Small
 - only 1 prompt works for CodeParrot (meaning it cannot be batched)
