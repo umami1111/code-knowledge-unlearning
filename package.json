@@ -1,0 +1,7 @@
+{
+    "name": "CodeIPPrompt",
+    "type": "module",
+    "dependencies": {
+        "@dodona/dolos-lib": "^3.1.1"
+    }
+}

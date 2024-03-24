@@ -1,5 +1,7 @@
 .vscode/settings.json
-Prompts/*
-Source/*
+Prompts/
+Source/
 venv/
-Programs/*
+Programs/
+node_modules/
+__pycache__/
