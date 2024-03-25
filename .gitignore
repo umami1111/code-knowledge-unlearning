@@ -1,6 +1,6 @@
 .vscode/settings.json
 Prompts/
-# Source/
+Source/
 venv/
 Programs/
 node_modules/
