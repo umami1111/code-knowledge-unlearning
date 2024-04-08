@@ -39,6 +39,11 @@ python3.10 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 sudo apt install -y build-essential
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+nvm install node
+nvm use node
 npm install -g @dodona/dolos
 npm install -g tree-sitter-cpp@0.20
 npm install
