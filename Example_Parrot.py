@@ -70,7 +70,7 @@ if __name__=='__main__':
     output_paths = []
     for filename in os.listdir(prompt_path):
         # Open the file that ends with ".py"
-        if filename.endswith(".c"):
+        if filename.endswith(".py"):
             output_path = program_path + filename
             output_file_checklast = output_path.split('.')[0] + "_" + str(NUM_PER_PROMPT - 1) + "." + output_path.split('.')[1]
             if os.path.exists(output_file_checklast):

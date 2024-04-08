@@ -163,7 +163,7 @@ if __name__ == "__main__":
                 dolos_score, jplag_score = check_file(test_file, source_file, language)
 
                 program_diff(test_file, test_subdir, prompt_file)
-                test_clean = "Programs_Cleaned/" + test_subdir + "/" + file_name
+                test_clean = "Programs_Cleaned/" + test_subdir + "/" + file_name.split(".")[0] + "_" + str(i) + "." + file_extension
                 dolos_score_clean, jplag_score_clean = check_file(test_clean, source_file, language)
 
                 file_highest = max(float(dolos_score_clean), float(jplag_score_clean))
