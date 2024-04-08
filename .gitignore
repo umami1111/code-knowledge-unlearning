@@ -9,3 +9,5 @@ tmp/
 Programs_Cleaned/
 Results/
 jplag_*
+temp.py
+*.txt
