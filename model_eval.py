@@ -40,7 +40,10 @@ def check_file(test, source, language):
             dolos_score = 0
         try:
             jplag_score = jplag_score_func(test, temp_matched, language)
-        except:
+            print(jplag_score)
+        except Exception as e:
+            print(e)
+            print("Hello world")
             jplag_score = 0
 
     subprocess.call("rm -rf " + temp_matched, shell=True)

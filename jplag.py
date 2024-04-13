@@ -34,6 +34,7 @@ def jplag_score_func(test, source, language):
 
     with open("jplag_output.txt", "r") as file:
         for line in file:
+            # print(line)
             if "Comparing jplag_test_dir" in line:
                 jplag_score = float(line.split(":")[3].replace(" ", ""))
 
