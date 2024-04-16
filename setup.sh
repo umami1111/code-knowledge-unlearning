@@ -44,9 +44,8 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 nvm install node
 nvm use node
-npm install -g @dodona/dolos
-npm install -g tree-sitter-cpp@0.20
-npm install
+npm install @dodona/dolos-lib
+npm install tree-sitter-cpp@0.20
 sudo apt install -y openjdk-17-jre-headless
 sudo apt install -y openjdk-17-jdk-headless
 
