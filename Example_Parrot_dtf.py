@@ -1,7 +1,6 @@
-# This is an example script that uses CodeParrot to generate programs for a given set of prompts.
+# This is an example script that uses CodeParrot to generate programs using dynamic filtering method for a given set of prompts.
 # model options: codeparrot/codeparrot, codeparrot/codeparrot-small
 
-# from transformers import pipeline
 import os
 import sys
 from datetime import datetime
@@ -9,7 +8,7 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import subprocess
 
-NUM_PER_PROMPT = 5
+NUM_PER_PROMPT = 10
 
 def check_file(test, source, language):
     match_results = "match_" + test.split("/")[-1].split(".")[0] + ".txt"
@@ -49,7 +48,6 @@ def evaluate_similarity(prompt, generated_text, source, language='python'):
     with open("./gen_temp.py", "w") as f:
         f.write(generated_text)
     dolos_score = check_file("./gen_temp.py", source, language)
-    # os.remove("./gen_temp.py")
     return float(dolos_score)
 
 def generate_code_with_filtering(model, tokenizer, prompt, source_paths, max_new_tokens=256, similarity_threshold=0.5, chunk_size=60, device='cuda', num_sequences=1):
@@ -114,9 +112,7 @@ def generate_code_with_filtering(model, tokenizer, prompt, source_paths, max_new
                         break
             if finished[i]==0:
                 input_sequences[i] = tokenizer.decode(outputs['sequences'][i], skip_special_tokens=True)
-        # print(input_sequences)
-        # print(flush=True)
-
+    os.remove("./gen_temp.py")
     return input_sequences
 
 def codeparrot(model, tokenizer, prompts, output_paths, source_paths, num_prompts_per_gen=1):
@@ -128,16 +124,12 @@ def codeparrot(model, tokenizer, prompts, output_paths, source_paths, num_prompt
     assert len(prompts) == len(output_paths)
     assert len(prompts) == len(source_paths)
 
-    # import pdb; pdb.set_trace()
-
     gen_start_time = datetime.now()
 
     outputs = generate_code_with_filtering(model=model, tokenizer=tokenizer, prompt=prompts, source_paths=source_paths, device=model.device, num_sequences=NUM_PER_PROMPT)
-    # outputs = pipe(prompts, num_return_sequences=NUM_PER_PROMPT, max_new_tokens=256)
     print(f"Generated {num_prompts_per_gen} prompts * {NUM_PER_PROMPT} files: {(datetime.now() - gen_start_time).total_seconds()} [sec]")
     for i, output_path in enumerate(output_paths):
         for j in range(NUM_PER_PROMPT):
-            # if "generated_text" in outputs[NUM_PER_PROMPT*i + j]:
             output_file = output_path.split('.')[0] + "_" + str(j) + "." + output_path.split('.')[1]
             with open(output_file, 'w') as f:
                 f.write(outputs[NUM_PER_PROMPT*i + j])
