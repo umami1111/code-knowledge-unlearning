@@ -78,6 +78,20 @@ At last, please use results.py to get the final results in terms of *Expected Ma
 $ python3 results.py codegen2Bmulti 
 ```
 
+## Unlearning
+Prepare a dataset and fine-tunr CodeParrot (Small) in a similar manner to the [training of CodeParrot](https://github.com/huggingface/transformers/blob/main/examples/research_projects/codeparrot/scripts/codeparrot_training.py). **For now, only unlearning loss is considered.**
+
+```
+$ sh prepare_unlearning_datasets.sh
+$ python run_unlearning.py --output_dir output/unlearning --per_device_train_batch_size 2 --gradient_accumulation_steps=32 --learning_rate 5e-04 --weight_decay 0.1 --warmup_steps 10 --max_steps 500
+```
+
+Known issues are:
+
+* Not evaluated even on a validation set because what is a reasnable validation set is unclear
+* If we train a model on paired samples (e.g. pairs of copyrighted and rewritten code) for computiong unlearn and maintain loss, need to modify the dataloader, which currently works on a chunked dataset where each sample is a chunk with the constant length of tokens for computational efficiency
+
+
 # Citation
 
 If you find the platform useful, please cite our work with the following reference:
