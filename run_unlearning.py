@@ -17,7 +17,7 @@ from torch.utils.data.dataloader import DataLoader
 from torch.utils.data.datapipes.iter.combinatorics import ShufflerIterDataPipe
 
 import transformers
-from transformers import AutoModelForCausalLM, AutoTokenizer, HfArgumentParser, get_scheduler, set_seed
+from transformers import AutoModelForCausalLM, AutoTokenizer, DataCollatorForLanguageModeling, HfArgumentParser, get_scheduler, set_seed
 
 import peft
 from peft import LoraConfig, get_peft_model
@@ -98,21 +98,103 @@ class ConstantLengthDataset(IterableDataset):
         return ShufflerIterDataPipe(self, buffer_size=buffer_size)
 
 
-def create_dataloaders(args, tokenizer):
-    train_data = load_dataset(path=args.data_dir, split="train")
-    train_data = train_data.shuffle(seed=args.seed)
-    # valid_data = load_dataset(args.dataset_name_valid, split="valid")
-    train_dataset = ConstantLengthDataset(
-        tokenizer, train_data, infinite=True, seq_length=args.seq_length, tokenized=args.tokenized
+def create_unlearn_dataloader(tokenizer, dataset, fraction=1.0, batch_size=4):
+    """
+    Given the PKU dataset, create the dataloader on the unlearned harmful Q&A pairs.
+
+    Args:
+        tokenizer: Tokenizer.
+        dataset: Loaded PKU dataset.
+        fraction: <1 will do downsampling.
+        batch_size: Batch size.
+
+    Returns:
+        Data loader of PKU harmful Q&A pairs.
+    """
+
+    # Preprocess function.
+    def preprocess(examples):
+        results = {"input_ids": [], "attention_mask": [], "start_locs": []}
+        for i in range(len(examples["question"])):
+            question = examples["question"][i]
+            answer = examples["answer"][i]
+            tokenized = tokenizer(f"{question}\n{answer}", truncation=True, padding="max_length")
+            results["input_ids"].append(tokenized["input_ids"])
+            results["attention_mask"].append(tokenized["attention_mask"])
+            test_text = f"{question}\n"
+            test_tokenized = tokenizer(
+                test_text, truncation=True,
+                #padding="max_length"  # NOTE: Comment out the argument provided in the original implementation because using this means len(test_tokenized["input_ids"]) is always the max_length.
+            )
+            results["start_locs"].append(len(test_tokenized["input_ids"]) - 1)
+
+        return results
+
+    # Need to drop all original columns to emit more than one row for each original row https://huggingface.co/docs/datasets/about_map_batch#input-size-output-size.
+    dataset = dataset.map(preprocess, batched=True, remove_columns=["filename", "question", "answer"])
+    dataset.set_format(
+        type="torch", columns=["input_ids", "attention_mask", "start_locs"]
     )
-    # valid_dataset = ConstantLengthDataset(
-    #     tokenizer, valid_data, infinite=False, seq_length=args.seq_length, tokenized=args.tokenized
-    # )
-    train_dataset = train_dataset.shuffle(buffer_size=args.shuffle_buffer)
-    train_dataloader = DataLoader(train_dataset, batch_size=args.per_device_train_batch_size, shuffle=True)
-    eval_dataloader = None
-    # eval_dataloader = DataLoader(valid_dataset, batch_size=args.valid_batch_size)
-    return train_dataloader, eval_dataloader
+
+    # Add labels and make it data loader.
+    data_collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=False)
+
+    dataloader = torch.utils.data.DataLoader(
+        dataset, batch_size=batch_size, collate_fn=data_collator
+    )
+
+    return dataloader
+
+
+def get_answer_loss(operation, batch, model, device="cuda:0"):
+    """
+    Compute the loss on the answer (i.e. y) part.
+
+    Args:
+        operation: either "ga" (gradient ascent) or "gd" (gradient descent).
+        batch: A batch of data.
+        model: The unlearned model.
+        device: GPU device.
+
+    Returns:
+       The loss.
+    """
+    assert operation in ["ga", "gd"], "Operation must be either GA or GD."
+    input_ids, attention_mask, start_locs, labels = (
+        batch["input_ids"].to(device),
+        batch["attention_mask"].to(device),
+        batch["start_locs"],
+        batch["labels"].to(device),
+    )
+    outputs = model(input_ids, attention_mask=attention_mask)
+    loss_fct = torch.nn.CrossEntropyLoss(reduction="none")
+    # Shift one to predict next token.
+    shift_logits = outputs.logits[:, :-1, :]
+    shift_labels = labels[:, 1:]
+    losses = []
+    for bid in range(input_ids.shape[0]):
+        one_inp, one_st = input_ids[bid], start_locs[bid]
+
+        # GA or GD.
+        position_loss = loss_fct(shift_logits[bid], shift_labels[bid])
+        if operation == "ga":  # Negative the direction for GA.
+            position_loss = -position_loss
+
+        # Simply put equal weights on all answers.
+        position_weight = torch.zeros_like(one_inp)
+        assert len(position_weight) == len(position_loss) + 1
+        position_weight[one_st:] = 1  # only focus on answer part
+
+        # Ignore the padding part.
+        position_weight[one_inp == 1] = 0
+        if position_weight.sum() > 0:
+            position_weight = position_weight / position_weight.sum()
+
+        one_loss = (position_weight[:-1] * position_loss).sum()
+        losses.append(one_loss)
+    final_loss = torch.stack(losses).mean()
+
+    return final_loss
 
 
 def get_grouped_params(model, args, no_decay=["bias", "ln_1.weight", "ln_2.weight", "ln_f.weight"]):
@@ -157,6 +239,7 @@ parser.add_argument("--tokenized", type=bool, default=False, help="Dataset is to
 parser.add_argument("--shuffle_buffer", type=int, default=10000, help="Size of buffer used to shuffle streaming dataset.")
 parser.add_argument("--seq_length", type=int, default=1024, help="Sequence lengths used for training.")
 parser.add_argument("--lambda", type=float, default=1e-1, help="Coefficient for maintain loss.")
+parser.add_argument("--max_unlearn_loss", type=float, default=100, help="Maximum loss on bad samples to terminate.")
 args = parser.parse_args()
 
 name = "lr-{}_bs-{}_accsteps-{}_maxsteps-{}_warmsteps-{}_lora-{}_seed-{}".format(
@@ -184,6 +267,7 @@ logging.basicConfig(
 # accelerator
 accelerator = Accelerator()
 acc_state = {str(k): str(v) for k, v in accelerator.state.__dict__.items() if k not in args}
+device = accelerator.device
 
 args = Namespace(**vars(args), **acc_state)
 logger.info(args)
@@ -193,7 +277,9 @@ samples_per_step = accelerator.state.num_processes * args.per_device_train_batch
 set_seed(args.seed)
 
 tokenizer = AutoTokenizer.from_pretrained(args.model_name)
+tokenizer.add_special_tokens({"pad_token": "[PAD]"})
 model = AutoModelForCausalLM.from_pretrained(args.model_name)
+model.resize_token_embeddings(len(tokenizer))
 
 if not args.turn_off_lora:
     config = LoraConfig(
@@ -207,8 +293,9 @@ if not args.turn_off_lora:
 
 print(tokenizer)
 print(model)
-train_dataloader, eval_dataloader = create_dataloaders(args, tokenizer)
-#print(train_dataloader, eval_dataloader)
+train_dataset = load_dataset(path="data/unlearning", split="train")
+train_dataloader = create_unlearn_dataloader(tokenizer, dataset=train_dataset, batch_size=args.per_device_train_batch_size)
+#print(train_dataloader)
 optimizer = AdamW(get_grouped_params(model, args), lr=args.learning_rate)
 lr_scheduler = get_scheduler(
     name=args.lr_scheduler_type,
@@ -224,9 +311,7 @@ accelerator.register_for_checkpointing(lr_scheduler)
 def get_lr():
     return optimizer.param_groups[0]["lr"]
 
-model, optimizer, train_dataloader, eval_dataloader = accelerator.prepare(
-    model, optimizer, train_dataloader, eval_dataloader
-)
+model, optimizer, train_dataloader = accelerator.prepare(model, optimizer, train_dataloader)
 
 model.train()
 completed_steps = 0
@@ -235,9 +320,7 @@ accumulated_loss_mainrain = 0.
 accumulated_loss_total = 0.
 
 for step, batch in enumerate(tqdm(train_dataloader), start=1):
-    outputs = model(input_ids=batch, labels=batch)
-    loss_total = -outputs.loss
-    #loss_total = outputs.loss # to check if the loss is calculated correctly
+    loss_total = get_answer_loss("ga", batch, model, device=device)
     accumulated_loss_unlearn += loss_total.item() / args.gradient_accumulation_steps
 
     # loss_maintain = <DO ANYTHING FUN>
@@ -262,8 +345,17 @@ for step, batch in enumerate(tqdm(train_dataloader), start=1):
     if completed_steps >= args.max_steps:
         break
 
+# Generate an example
+from transformers import pipeline
+prompt = "class DataUpdate(BaseDataUpdate):\n"
+generator = pipeline("text-generation", model=model, tokenizer=tokenizer)
+print(generator(prompt)[0]["generated_text"])
+
+# FIXME
 accelerator.wait_for_everyone()
+if not args.turn_off_lora:
+    model = model.merge_and_unload()
 unwrapped_model = accelerator.unwrap_model(model)
-unwrapped_model.save_pretrained(model_dir, save_function=accelerator.save)
 save_dir = model_dir / name
-accelerator.save_state(save_dir)
+unwrapped_model.save_pretrained(save_dir, save_function=accelerator.save)
+tokenizer.save_pretrained(save_dir, save_function=accelerator.save)
