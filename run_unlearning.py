@@ -121,12 +121,16 @@ def create_unlearn_dataloader(tokenizer, dataset, fraction=1.0, batch_size=4):
             tokenized = tokenizer(f"{question}\n{answer}", truncation=True, padding="max_length")
             results["input_ids"].append(tokenized["input_ids"])
             results["attention_mask"].append(tokenized["attention_mask"])
-            test_text = f"{question}\n"
-            test_tokenized = tokenizer(
-                test_text, truncation=True,
-                #padding="max_length"  # NOTE: Comment out the argument provided in the original implementation because using this means len(test_tokenized["input_ids"]) is always the max_length.
-            )
-            results["start_locs"].append(len(test_tokenized["input_ids"]) - 1)
+            
+            # test_text = f"{question}\n"
+            # test_tokenized = tokenizer(
+            #     test_text, truncation=True,
+            #     #padding="max_length"  # NOTE: Comment out the argument provided in the original implementation because using this means len(test_tokenized["input_ids"]) is always the max_length.
+            # )
+            # results["start_locs"].append(len(test_tokenized["input_ids"]) - 1)
+
+            # Need to set a different start index for left-padding?
+            results["start_locs"].append(len(results["input_ids"]) - len(tokenizer(answer, truncation=True)))
 
         return results
 
@@ -185,8 +189,9 @@ def get_answer_loss(operation, batch, model, device="cuda:0"):
         assert len(position_weight) == len(position_loss) + 1
         position_weight[one_st:] = 1  # only focus on answer part
 
+        # Should not do this 0 filling for left-padding?
         # Ignore the padding part.
-        position_weight[one_inp == 1] = 0
+        # position_weight[one_inp == 1] = 0
         if position_weight.sum() > 0:
             position_weight = position_weight / position_weight.sum()
 
@@ -233,7 +238,7 @@ def evaluate(args):
 parser = HfArgumentParser(TrainingArguments)
 parser.add_argument("--data_dir", type=str, default="data/unlearning", help="Dataset dir.")
 parser.add_argument("--model_name", type=str, default="codeparrot/codeparrot-small", help="Model name.")
-parser.add_argument("--turn_off_lora", type=bool, default=False, help="Turn off LoRA.")
+parser.add_argument("--turn_off_lora", action="store_true", help="Turn off LoRA.")
 parser.add_argument("--lora_r", type=int, default=8, help="r for LoRA. Ignored when turn_off_lora=True")
 parser.add_argument("--tokenized", type=bool, default=False, help="Dataset is tokenized or not.")
 parser.add_argument("--shuffle_buffer", type=int, default=10000, help="Size of buffer used to shuffle streaming dataset.")
@@ -242,8 +247,9 @@ parser.add_argument("--lambda", type=float, default=1e-1, help="Coefficient for 
 parser.add_argument("--max_unlearn_loss", type=float, default=100, help="Maximum loss on bad samples to terminate.")
 args = parser.parse_args()
 
-name = "lr-{}_bs-{}_accsteps-{}_maxsteps-{}_warmsteps-{}_lora-{}_seed-{}".format(
-    args.learning_rate, args.per_device_train_batch_size, args.gradient_accumulation_steps, args.max_steps, args.warmup_steps,
+name = "lr-{}_bs-{}_accsteps-{}_epochs-{}_maxsteps-{}_warmsteps-{}_lora-{}_seed-{}".format(
+    args.learning_rate, args.per_device_train_batch_size, args.gradient_accumulation_steps, args.num_train_epochs,
+    0 if args.max_steps is None or args.max_steps <= 0 else args.max_steps, args.warmup_steps,
     0 if args.turn_off_lora else args.lora_r, args.seed,
 )
 
@@ -277,9 +283,10 @@ samples_per_step = accelerator.state.num_processes * args.per_device_train_batch
 set_seed(args.seed)
 
 tokenizer = AutoTokenizer.from_pretrained(args.model_name)
-tokenizer.add_special_tokens({"pad_token": "[PAD]"})
 model = AutoModelForCausalLM.from_pretrained(args.model_name)
-model.resize_token_embeddings(len(tokenizer))
+if model.__class__.__name__.startswith("GPT2"):
+    tokenizer.pad_token = tokenizer.eos_token
+    tokenizer.padding_side = "left"
 
 if not args.turn_off_lora:
     config = LoraConfig(
@@ -293,7 +300,8 @@ if not args.turn_off_lora:
 
 print(tokenizer)
 print(model)
-train_dataset = load_dataset(path="data/unlearning", split="train")
+train_dataset = load_dataset(path=args.data_dir, split="train")
+print(train_dataset)
 train_dataloader = create_unlearn_dataloader(tokenizer, dataset=train_dataset, batch_size=args.per_device_train_batch_size)
 #print(train_dataloader)
 optimizer = AdamW(get_grouped_params(model, args), lr=args.learning_rate)
@@ -301,7 +309,7 @@ lr_scheduler = get_scheduler(
     name=args.lr_scheduler_type,
     optimizer=optimizer,
     num_warmup_steps=args.warmup_steps,
-    num_training_steps=args.max_steps,
+    num_training_steps=args.num_train_epochs * (len(train_dataset) // (args.per_device_train_batch_size * args.gradient_accumulation_steps)) if args.max_steps is None or args.max_steps <= 0 else args.max_steps,
 )
 print(optimizer)
 print(lr_scheduler)
@@ -319,37 +327,40 @@ accumulated_loss_unlearn = 0.
 accumulated_loss_mainrain = 0.
 accumulated_loss_total = 0.
 
-for step, batch in enumerate(tqdm(train_dataloader), start=1):
-    loss_total = get_answer_loss("ga", batch, model, device=device)
-    accumulated_loss_unlearn += loss_total.item() / args.gradient_accumulation_steps
+logger.info(f"num_train_epochs {args.num_train_epochs}, max_steps: {args.max_steps}")
+for epoch in range(1, int(args.num_train_epochs) + 1):
+    for step, batch in enumerate(tqdm(train_dataloader), start=1):
+        loss_total = get_answer_loss("ga", batch, model, device=device)
+        accumulated_loss_unlearn += loss_total.item() / args.gradient_accumulation_steps
 
-    # loss_maintain = <DO ANYTHING FUN>
-    # accumulated_loss_maintian += loss_maintain.item() / args.gradient_accumulation_steps
-    # loss_total += lambda * loss_maintain
+        # loss_maintain = <DO ANYTHING FUN>
+        # accumulated_loss_maintian += loss_maintain.item() / args.gradient_accumulation_steps
+        # loss_total += lambda * loss_maintain
 
-    accumulated_loss_total += loss_total.item() / args.gradient_accumulation_steps
-    accelerator.backward(loss_total)
+        accumulated_loss_total += loss_total.item() / args.gradient_accumulation_steps
+        accelerator.backward(loss_total)
 
-    if step % args.gradient_accumulation_steps == 0:
-        lr = get_lr()
-        accelerator.clip_grad_norm_(model.parameters(), 1.0)
-        optimizer.step()
-        optimizer.zero_grad()
-        lr_scheduler.step()
-        logger.info(f"step: {step}, lr: {lr}, loss_total: {accumulated_loss_total}, loss_unlearn: {accumulated_loss_unlearn}, loss_maintain: {accumulated_loss_mainrain}")
-        accumulated_loss_unlearn = 0.
-        accumulated_loss_mainrain = 0.
-        accumulated_loss_total = 0.
-        completed_steps += 1
+        if step % args.gradient_accumulation_steps == 0:
+            lr = get_lr()
+            accelerator.clip_grad_norm_(model.parameters(), 1.0)
+            optimizer.step()
+            optimizer.zero_grad()
+            lr_scheduler.step()
+            logger.info(f"step: {step}, lr: {lr}, loss_total: {accumulated_loss_total}, loss_unlearn: {accumulated_loss_unlearn}, loss_maintain: {accumulated_loss_mainrain}")
+            accumulated_loss_unlearn = 0.
+            accumulated_loss_mainrain = 0.
+            accumulated_loss_total = 0.
+            completed_steps += 1
 
-    if completed_steps >= args.max_steps:
+    if args.max_steps is not None and args.max_steps > 0 and args.max_stepscompleted_steps >= args.max_steps:
+        logger.info(f"Max steps {args.max_steps} reached")
         break
 
 # Generate an example
 from transformers import pipeline
 prompt = "class DataUpdate(BaseDataUpdate):\n"
 generator = pipeline("text-generation", model=model, tokenizer=tokenizer)
-print(generator(prompt)[0]["generated_text"])
+print(generator(prompt, max_length=256)[0]["generated_text"])
 
 # FIXME
 accelerator.wait_for_everyone()
