@@ -1,0 +1,1 @@
+class PartnerCSV(models.AbstractModel):

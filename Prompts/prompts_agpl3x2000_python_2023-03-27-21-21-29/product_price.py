@@ -1,0 +1,1 @@
+class ProductPriceHistory(models.Model):

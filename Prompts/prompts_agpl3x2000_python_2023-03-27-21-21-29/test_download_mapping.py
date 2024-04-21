@@ -1,0 +1,1 @@
+class TestDownloadMapping(unittest.TestCase):

@@ -1,0 +1,1 @@
+class ProductAttributeLine(models.Model):

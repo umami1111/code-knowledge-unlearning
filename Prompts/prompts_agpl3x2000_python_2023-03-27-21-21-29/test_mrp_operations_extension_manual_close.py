@@ -1,0 +1,1 @@
+class TestMrpOperationsExtensionManualClose(common.TransactionCase):

@@ -1,0 +1,1 @@
+class PurchaseCostDistribution(models.Model):

@@ -1,0 +1,1 @@
+class AccountPaymentLine(models.Model):

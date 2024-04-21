@@ -1,0 +1,1 @@
+class IrCron(models.Model):

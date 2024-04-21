@@ -1,0 +1,1 @@
+class TestProductAttributeTypes(common.TransactionCase):

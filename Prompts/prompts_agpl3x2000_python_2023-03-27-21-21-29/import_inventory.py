@@ -1,0 +1,1 @@
+class ImportInventory(models.TransientModel):

@@ -1,0 +1,1 @@
+class TestStockInvoicingType(common.TransactionCase):

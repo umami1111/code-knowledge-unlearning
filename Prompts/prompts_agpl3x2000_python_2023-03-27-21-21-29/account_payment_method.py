@@ -1,0 +1,1 @@
+class AccountPaymentMethod(models.Model):

@@ -1,0 +1,1 @@
+class OpenPhishCommercialParserBot(ParserBot):

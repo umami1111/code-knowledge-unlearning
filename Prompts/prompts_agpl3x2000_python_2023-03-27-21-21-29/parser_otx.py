@@ -1,0 +1,1 @@
+class AlienVaultOTXParserBot(ParserBot):

@@ -1,0 +1,1 @@
+class AgedPartnerBalanceXslx(models.AbstractModel):

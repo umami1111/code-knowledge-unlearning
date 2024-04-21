@@ -1,0 +1,1 @@
+class BranchMigrator(object):

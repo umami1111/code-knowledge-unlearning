@@ -1,0 +1,1 @@
+class DeletionLog(models.Model):

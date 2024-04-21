@@ -1,0 +1,1 @@
+class DaysOfWeek(models.Model):

@@ -1,0 +1,1 @@
+class TestOpenItems(AccountTestInvoicingCommon):

@@ -1,0 +1,1 @@
+class TestInvoiceMandate(TransactionCase):

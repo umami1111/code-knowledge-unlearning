@@ -1,0 +1,1 @@
+class ResourceCalendarLeaves(models.Model):

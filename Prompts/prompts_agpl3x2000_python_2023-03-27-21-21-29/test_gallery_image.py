@@ -1,0 +1,1 @@
+class AddGalleryImageTestCase(WgerAddTestCase):

@@ -1,0 +1,1 @@
+class MassmessageBaseForm(formencode.Schema):

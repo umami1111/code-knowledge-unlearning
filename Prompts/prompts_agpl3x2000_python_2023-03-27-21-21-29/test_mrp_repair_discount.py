@@ -1,0 +1,1 @@
+class TestMrpRepairDiscount(common.SavepointCase):

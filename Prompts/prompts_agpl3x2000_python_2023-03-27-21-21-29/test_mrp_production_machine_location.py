@@ -1,0 +1,1 @@
+class TestMrpProductionMachineLocation(common.TransactionCase):

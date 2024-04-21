@@ -1,0 +1,1 @@
+class CollectionWrapperTest(unittest.TestCase):

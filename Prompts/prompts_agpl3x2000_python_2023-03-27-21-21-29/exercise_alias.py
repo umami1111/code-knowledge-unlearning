@@ -1,0 +1,1 @@
+class Alias(models.Model):

@@ -1,0 +1,1 @@
+class HealthChecksAlertsTest(unittest.TestCase):

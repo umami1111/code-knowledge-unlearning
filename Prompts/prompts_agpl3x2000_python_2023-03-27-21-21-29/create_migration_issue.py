@@ -1,0 +1,1 @@
+class MigrationIssuesCreator(object):

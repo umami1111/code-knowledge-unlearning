@@ -1,0 +1,1 @@
+class ContractContractTerminate(models.TransientModel):

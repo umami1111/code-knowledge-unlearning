@@ -1,0 +1,1 @@
+class TestProcurementService(common.TransactionCase):

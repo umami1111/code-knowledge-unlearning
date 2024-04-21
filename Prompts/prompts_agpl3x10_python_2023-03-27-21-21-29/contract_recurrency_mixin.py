@@ -1,0 +1,1 @@
+class ContractRecurrencyBasicMixin(models.AbstractModel):

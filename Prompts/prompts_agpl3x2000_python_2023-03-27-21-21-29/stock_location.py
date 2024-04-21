@@ -1,0 +1,1 @@
+class StockLocation(models.Model):

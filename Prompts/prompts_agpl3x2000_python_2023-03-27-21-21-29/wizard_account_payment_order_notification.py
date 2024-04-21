@@ -1,0 +1,1 @@
+class WizardAccountPaymentOrderNotification(models.TransientModel):

@@ -1,0 +1,1 @@
+class OpenItemsReportWizard(models.TransientModel):

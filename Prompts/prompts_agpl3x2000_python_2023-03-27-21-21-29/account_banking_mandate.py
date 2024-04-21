@@ -1,0 +1,1 @@
+class AccountBankingMandate(models.Model):

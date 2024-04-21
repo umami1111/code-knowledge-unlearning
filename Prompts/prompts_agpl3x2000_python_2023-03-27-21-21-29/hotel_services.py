@@ -1,0 +1,1 @@
+class HotelServices(models.Model):

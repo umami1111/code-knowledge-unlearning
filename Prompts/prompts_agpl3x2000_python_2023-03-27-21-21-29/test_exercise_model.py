@@ -1,0 +1,1 @@
+class ExerciseModelTestCase(WgerTestCase):

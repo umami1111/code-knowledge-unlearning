@@ -1,0 +1,1 @@
+class TestMrpSubcontractingInhibit(common.SavepointCase):

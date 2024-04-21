@@ -1,0 +1,1 @@
+def log(*args) -> None:

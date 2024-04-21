@@ -1,0 +1,1 @@
+class JournalLedgerReport(models.AbstractModel):

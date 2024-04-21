@@ -1,0 +1,1 @@
+class QcInspection(models.Model):

@@ -1,0 +1,1 @@
+def remove_memberships_of_cancelled_users_acounts(apps, schema_editor):

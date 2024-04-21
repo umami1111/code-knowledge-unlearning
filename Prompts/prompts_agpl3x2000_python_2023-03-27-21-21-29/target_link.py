@@ -1,0 +1,1 @@
+class TargetBlankLinkExtension(markdown.Extension):

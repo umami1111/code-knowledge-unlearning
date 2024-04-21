@@ -1,0 +1,1 @@
+class TestUserController(TestController):

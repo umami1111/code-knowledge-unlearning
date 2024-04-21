@@ -1,0 +1,1 @@
+class TestMRP(common.TransactionCase):

@@ -1,0 +1,1 @@
+class TestMrpRepairAnalytic(common.TransactionCase):

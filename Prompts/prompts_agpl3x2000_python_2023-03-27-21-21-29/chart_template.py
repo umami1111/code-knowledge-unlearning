@@ -1,0 +1,1 @@
+class AccountChartTemplate(models.Model):

@@ -1,0 +1,1 @@
+class TaigaReferencesExtension(Extension):

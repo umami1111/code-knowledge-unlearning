@@ -1,0 +1,1 @@
+class WorkcenterLineFinish(models.TransientModel):

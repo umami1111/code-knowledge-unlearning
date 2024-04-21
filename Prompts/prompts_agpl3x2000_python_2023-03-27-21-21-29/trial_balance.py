@@ -1,0 +1,1 @@
+class TrialBalanceReport(models.AbstractModel):

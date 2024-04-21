@@ -1,0 +1,1 @@
+class BlockedMixin(models.Model):

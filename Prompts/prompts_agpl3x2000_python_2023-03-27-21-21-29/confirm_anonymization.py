@@ -1,0 +1,1 @@
+class ConfirmAnonymization(models.TransientModel):

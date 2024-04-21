@@ -1,0 +1,1 @@
+class IrModel(models.Model):

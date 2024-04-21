@@ -1,0 +1,1 @@
+class TestStockQuantNameSearch(common.TransactionCase):

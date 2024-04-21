@@ -1,0 +1,1 @@
+class WizardFilterMrpTask(models.TransientModel):

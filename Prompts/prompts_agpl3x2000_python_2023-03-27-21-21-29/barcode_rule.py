@@ -1,0 +1,1 @@
+class BarcodeRule(models.Model):

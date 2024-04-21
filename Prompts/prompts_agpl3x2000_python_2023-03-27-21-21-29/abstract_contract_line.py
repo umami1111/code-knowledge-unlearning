@@ -1,0 +1,1 @@
+class ContractAbstractContractLine(models.AbstractModel):

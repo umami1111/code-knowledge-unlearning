@@ -1,0 +1,1 @@
+class BaseModuleImport(models.TransientModel):

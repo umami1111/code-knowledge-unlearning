@@ -1,0 +1,1 @@
+class TestBomTracking(common.SavepointCase):

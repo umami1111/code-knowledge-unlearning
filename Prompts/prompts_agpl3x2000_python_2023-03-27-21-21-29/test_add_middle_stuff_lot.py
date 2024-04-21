@@ -1,0 +1,1 @@
+class TestMrpProductionAddMiddleStuffLot(TestMrpProductionAddMiddleStuff):

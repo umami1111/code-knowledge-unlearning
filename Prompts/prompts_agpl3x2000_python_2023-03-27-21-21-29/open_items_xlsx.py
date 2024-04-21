@@ -1,0 +1,1 @@
+class OpenItemsXslx(models.AbstractModel):

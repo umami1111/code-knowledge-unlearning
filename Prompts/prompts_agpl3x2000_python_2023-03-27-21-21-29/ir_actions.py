@@ -1,0 +1,1 @@
+class IrActionsActions(models.Model):

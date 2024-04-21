@@ -1,0 +1,1 @@
+class WizardOpenTaxBalances(models.TransientModel):

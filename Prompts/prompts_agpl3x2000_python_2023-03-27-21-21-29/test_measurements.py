@@ -1,0 +1,1 @@
+class MeasurementsApiTestCase(api_base_test.ApiBaseResourceTestCase):

@@ -1,0 +1,1 @@
+class MrpPlannedOrderWizard(models.TransientModel):

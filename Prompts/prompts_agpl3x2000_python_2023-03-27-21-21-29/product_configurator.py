@@ -1,0 +1,1 @@
+class ProductConfigurator(models.AbstractModel):

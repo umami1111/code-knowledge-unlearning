@@ -1,0 +1,1 @@
+class BadgeForm(formencode.Schema):

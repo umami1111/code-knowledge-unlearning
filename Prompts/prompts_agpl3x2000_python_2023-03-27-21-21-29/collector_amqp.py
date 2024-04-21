@@ -1,0 +1,1 @@
+class AMQPCollectorBot(AMQPTopicOutputBot, CollectorBot):

@@ -1,0 +1,1 @@
+def time(hour, minute):

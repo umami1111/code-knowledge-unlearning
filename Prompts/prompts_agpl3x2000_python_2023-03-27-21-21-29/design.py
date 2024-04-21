@@ -1,0 +1,1 @@
+class home(delegate.page):

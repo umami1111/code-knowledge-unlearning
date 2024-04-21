@@ -1,0 +1,1 @@
+class WeightUnitListView(PermissionRequiredMixin, ListView):

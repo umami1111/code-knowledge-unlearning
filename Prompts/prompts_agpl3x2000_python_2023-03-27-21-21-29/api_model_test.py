@@ -1,0 +1,1 @@
+class AlertsAPIModelTest(unittest.TestCase):

@@ -1,0 +1,1 @@
+class UpgradeAnalysis(models.Model):

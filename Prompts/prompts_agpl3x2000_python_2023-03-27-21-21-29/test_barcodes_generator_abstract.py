@@ -1,0 +1,1 @@
+class TestBarcodesGeneratorAbstract(TransactionCase, FakeModelLoader):

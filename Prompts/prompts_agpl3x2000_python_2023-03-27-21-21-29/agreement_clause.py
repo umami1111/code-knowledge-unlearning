@@ -1,0 +1,1 @@
+class AgreementClause(models.Model):

@@ -1,0 +1,1 @@
+class ShibbolethRegisterForm(formencode.Schema):

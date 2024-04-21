@@ -1,0 +1,1 @@
+class EditableScheduledProductTest(TransactionCase):

@@ -1,0 +1,1 @@
+class TestAlertEmails(TestCase):

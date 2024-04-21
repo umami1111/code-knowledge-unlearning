@@ -1,0 +1,1 @@
+class TestReport(common.TransactionCase):

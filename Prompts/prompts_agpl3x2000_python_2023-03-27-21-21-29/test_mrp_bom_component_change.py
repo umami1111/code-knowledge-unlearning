@@ -1,0 +1,1 @@
+class TestMrpBomComponentChange(common.TransactionCase):

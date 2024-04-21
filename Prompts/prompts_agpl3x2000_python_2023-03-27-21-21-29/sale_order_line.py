@@ -1,0 +1,1 @@
+class SaleOrderLine(models.Model):

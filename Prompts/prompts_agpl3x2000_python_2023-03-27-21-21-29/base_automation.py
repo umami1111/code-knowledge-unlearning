@@ -1,0 +1,1 @@
+class BaseAutomationCategory(models.Model):

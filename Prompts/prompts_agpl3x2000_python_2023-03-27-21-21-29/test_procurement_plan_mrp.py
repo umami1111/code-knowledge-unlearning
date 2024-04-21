@@ -1,0 +1,1 @@
+class TestProcurementPlanMrp(common.TransactionCase):

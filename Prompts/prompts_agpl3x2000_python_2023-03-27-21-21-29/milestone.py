@@ -1,0 +1,1 @@
+class MilestoneNewForm(formencode.Schema):

@@ -1,0 +1,1 @@
+class ShowmoreExtension(markdown.Extension):

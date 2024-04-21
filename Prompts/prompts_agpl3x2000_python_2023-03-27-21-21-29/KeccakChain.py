@@ -1,0 +1,1 @@
+class KeccakChain(BaseChain):

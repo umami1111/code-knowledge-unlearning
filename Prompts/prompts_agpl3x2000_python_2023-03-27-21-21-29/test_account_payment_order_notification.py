@@ -1,0 +1,1 @@
+class TestAccountPaymentOrderNotification(common.SavepointCase):

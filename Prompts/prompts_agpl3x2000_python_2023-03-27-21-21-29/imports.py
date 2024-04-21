@@ -1,0 +1,1 @@
+class Batch(web.storage):

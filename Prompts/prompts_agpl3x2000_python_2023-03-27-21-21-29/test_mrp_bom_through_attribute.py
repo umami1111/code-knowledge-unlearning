@@ -1,0 +1,1 @@
+class TestMrpBomThroughAttribute(common.TransactionCase):

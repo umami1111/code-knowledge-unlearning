@@ -1,0 +1,1 @@
+class TestMessageFactory(unittest.TestCase):

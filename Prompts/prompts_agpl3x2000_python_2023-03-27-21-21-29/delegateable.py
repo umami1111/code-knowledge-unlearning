@@ -1,0 +1,1 @@
+class Delegateable(meta.Indexable):

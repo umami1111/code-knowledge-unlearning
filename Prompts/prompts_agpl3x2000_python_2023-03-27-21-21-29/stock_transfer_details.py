@@ -1,0 +1,1 @@
+class StockTransferDetails(models.TransientModel):

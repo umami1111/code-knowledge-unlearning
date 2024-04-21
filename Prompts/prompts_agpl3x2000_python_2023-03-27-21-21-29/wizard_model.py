@@ -1,0 +1,1 @@
+class WizardModel(models.TransientModel):

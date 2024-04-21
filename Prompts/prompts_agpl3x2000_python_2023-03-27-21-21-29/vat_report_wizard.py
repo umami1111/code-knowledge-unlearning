@@ -1,0 +1,1 @@
+class VATReportWizard(models.TransientModel):

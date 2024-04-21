@@ -1,0 +1,1 @@
+class TestOpenIDAuth(unittest.TestCase):

@@ -1,0 +1,1 @@
+class TrgmIndex(models.Model):

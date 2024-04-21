@@ -1,0 +1,1 @@
+class URLNode(template.Node):

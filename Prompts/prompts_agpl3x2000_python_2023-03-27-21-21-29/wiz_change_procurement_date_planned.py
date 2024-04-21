@@ -1,0 +1,1 @@
+class WizChangeProcurementDatePlanned(models.TransientModel):

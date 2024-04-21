@@ -1,0 +1,1 @@
+class WorkoutShareButtonTestCase(WgerTestCase):

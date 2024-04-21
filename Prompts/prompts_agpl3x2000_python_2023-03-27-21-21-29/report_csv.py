@@ -1,0 +1,1 @@
+class ReportCSVAbstract(models.AbstractModel):

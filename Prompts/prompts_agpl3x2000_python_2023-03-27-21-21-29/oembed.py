@@ -1,0 +1,1 @@
+class OembedController(BaseController):

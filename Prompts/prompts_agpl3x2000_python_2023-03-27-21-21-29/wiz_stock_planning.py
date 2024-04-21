@@ -1,0 +1,1 @@
+class WizStockPlanning(models.TransientModel):

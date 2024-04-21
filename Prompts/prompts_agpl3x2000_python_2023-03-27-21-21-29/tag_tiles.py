@@ -1,0 +1,1 @@
+class TagTile(BaseTile):

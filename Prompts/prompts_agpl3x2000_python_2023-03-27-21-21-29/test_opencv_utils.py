@@ -1,0 +1,1 @@
+class TestOpenCVUtils(unittest.TestCase):

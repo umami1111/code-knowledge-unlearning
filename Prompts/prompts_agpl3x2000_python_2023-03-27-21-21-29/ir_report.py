@@ -1,0 +1,1 @@
+class ReportAction(models.Model):

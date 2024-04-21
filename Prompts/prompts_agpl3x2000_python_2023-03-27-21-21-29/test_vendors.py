@@ -1,0 +1,1 @@
+def test_clean_amazon_metadata_for_load_non_ISBN():

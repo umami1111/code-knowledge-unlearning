@@ -1,0 +1,1 @@
+class SolrDocument(TypedDict):

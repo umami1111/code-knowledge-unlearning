@@ -1,0 +1,1 @@
+class AccountTax(models.Model):

@@ -1,0 +1,1 @@
+class NvcChain(LtcScryptChain, PpcPosChain):

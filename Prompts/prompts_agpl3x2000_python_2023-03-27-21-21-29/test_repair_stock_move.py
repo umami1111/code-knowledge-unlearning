@@ -1,0 +1,1 @@
+class TestRepairStockMove(common.SavepointCase):

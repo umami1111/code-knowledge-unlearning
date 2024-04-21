@@ -1,0 +1,1 @@
+class AgreementSubtype(models.Model):

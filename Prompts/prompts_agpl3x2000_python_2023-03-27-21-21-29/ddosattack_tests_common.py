@@ -1,0 +1,1 @@
+class FraunhoferDdosAttackTestCase(test.BotTestCase):

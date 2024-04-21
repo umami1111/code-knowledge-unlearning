@@ -1,0 +1,1 @@
+class ReportBomStructure(models.AbstractModel):

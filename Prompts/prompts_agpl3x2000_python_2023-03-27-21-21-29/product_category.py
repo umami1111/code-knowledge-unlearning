@@ -1,0 +1,1 @@
+class ProductCategory(models.Model):

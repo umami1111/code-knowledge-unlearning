@@ -1,0 +1,1 @@
+class AgedPartnerBalanceReport(models.AbstractModel):

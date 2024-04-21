@@ -1,0 +1,1 @@
+class MrpBomSaleOrder(models.Model):

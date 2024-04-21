@@ -1,0 +1,1 @@
+class StockQuant(models.Model):

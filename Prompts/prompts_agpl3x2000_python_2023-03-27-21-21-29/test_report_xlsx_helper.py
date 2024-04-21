@@ -1,0 +1,1 @@
+class TestReportXlsxHelper(TransactionCase):

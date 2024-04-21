@@ -1,0 +1,1 @@
+class ProcurementOrder(models.Model):

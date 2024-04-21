@@ -1,0 +1,1 @@
+class WgerOwnerObjectModelViewSet(viewsets.ModelViewSet):

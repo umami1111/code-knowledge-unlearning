@@ -1,0 +1,1 @@
+class TestSubcontractedPartner(common.SavepointCase):

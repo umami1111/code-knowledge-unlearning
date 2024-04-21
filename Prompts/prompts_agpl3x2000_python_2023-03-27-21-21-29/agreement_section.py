@@ -1,0 +1,1 @@
+class AgreementSection(models.Model):

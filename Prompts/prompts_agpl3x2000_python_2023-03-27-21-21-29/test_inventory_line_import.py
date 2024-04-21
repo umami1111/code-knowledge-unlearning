@@ -1,0 +1,1 @@
+class TestInventoryLineImport(common.TransactionCase):

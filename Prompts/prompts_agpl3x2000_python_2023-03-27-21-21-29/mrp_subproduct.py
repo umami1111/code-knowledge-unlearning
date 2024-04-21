@@ -1,0 +1,1 @@
+class MrpSubproduct(models.Model):

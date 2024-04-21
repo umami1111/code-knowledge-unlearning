@@ -1,0 +1,1 @@
+def test_normal_login_func_transforms_input_into_str(get_and_validate_user_mock, make_auth_response_data_mock):

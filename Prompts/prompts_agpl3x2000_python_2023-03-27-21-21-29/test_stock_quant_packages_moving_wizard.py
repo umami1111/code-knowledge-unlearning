@@ -1,0 +1,1 @@
+class TestStockQuantPackagesMovingWizard(common.TransactionCase):

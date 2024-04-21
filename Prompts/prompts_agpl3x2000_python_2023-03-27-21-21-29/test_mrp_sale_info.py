@@ -1,0 +1,1 @@
+class TestMrpSaleInfo(common.SavepointCase):

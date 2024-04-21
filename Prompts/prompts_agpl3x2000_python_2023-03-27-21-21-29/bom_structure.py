@@ -1,0 +1,1 @@
+class BomStructureReport(models.AbstractModel):

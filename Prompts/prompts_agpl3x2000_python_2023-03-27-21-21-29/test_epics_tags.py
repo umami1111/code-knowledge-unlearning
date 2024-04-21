@@ -1,0 +1,1 @@
+def test_api_epic_add_new_tags_with_error(client):

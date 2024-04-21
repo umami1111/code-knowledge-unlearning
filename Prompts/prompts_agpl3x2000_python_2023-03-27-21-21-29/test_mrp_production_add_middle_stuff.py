@@ -1,0 +1,1 @@
+class TestMrpProductionAddMiddleStuff(common.TransactionCase):

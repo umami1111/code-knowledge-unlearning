@@ -1,0 +1,1 @@
+class TestCoreApi(TestCase):

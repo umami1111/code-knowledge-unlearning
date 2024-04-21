@@ -1,0 +1,1 @@
+class MrpWorkcenterProductivity(models.Model):

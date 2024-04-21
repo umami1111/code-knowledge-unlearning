@@ -1,0 +1,1 @@
+class StockPlanning(models.Model):

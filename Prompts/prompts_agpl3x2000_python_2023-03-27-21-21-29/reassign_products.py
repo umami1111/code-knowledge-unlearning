@@ -1,0 +1,1 @@
+class ReassignProducts(models.TransientModel):

@@ -1,0 +1,1 @@
+class PurchaseOrderLine(models.Model):

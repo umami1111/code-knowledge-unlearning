@@ -1,0 +1,1 @@
+class MrpBomChange(models.Model):

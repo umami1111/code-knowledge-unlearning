@@ -1,0 +1,1 @@
+class MailComposeMessage(models.TransientModel):

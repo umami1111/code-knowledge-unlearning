@@ -1,0 +1,1 @@
+class MrpProductionCase(TransactionCase):

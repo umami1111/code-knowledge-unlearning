@@ -1,0 +1,1 @@
+class ActionRuleTest(TransactionCase):

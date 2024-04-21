@@ -1,0 +1,1 @@
+class TestModule(TransactionCase):

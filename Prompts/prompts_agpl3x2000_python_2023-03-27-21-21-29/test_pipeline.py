@@ -1,0 +1,1 @@
+class TestPipeline(unittest.TestCase):

@@ -1,0 +1,1 @@
+class MrpBom(models.Model):

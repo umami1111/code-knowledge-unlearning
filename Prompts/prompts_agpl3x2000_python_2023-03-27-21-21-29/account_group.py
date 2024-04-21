@@ -1,0 +1,1 @@
+class AccountGroup(models.Model):

@@ -1,0 +1,1 @@
+class MailAttachCollectorBot(MailCollectorBot):

@@ -1,0 +1,1 @@
+class TestMrpOperationsRejectedQuantity(common.TransactionCase):

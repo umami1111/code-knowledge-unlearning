@@ -1,0 +1,1 @@
+class AuditlogAutovacuum(models.TransientModel):

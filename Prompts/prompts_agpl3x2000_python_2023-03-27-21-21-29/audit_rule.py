@@ -1,0 +1,1 @@
+class AuditRule(models.Model):

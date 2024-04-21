@@ -1,0 +1,1 @@
+class ContractManuallyCreateInvoice(models.TransientModel):

@@ -1,0 +1,1 @@
+def rewrite(fobj):

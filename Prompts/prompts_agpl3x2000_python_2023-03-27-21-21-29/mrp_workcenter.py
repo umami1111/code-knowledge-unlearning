@@ -1,0 +1,1 @@
+class MrpWorkcenter(models.Model):

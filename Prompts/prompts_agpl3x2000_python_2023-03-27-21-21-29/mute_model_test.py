@@ -1,0 +1,1 @@
+class MuteModelTest(unittest.TestCase):

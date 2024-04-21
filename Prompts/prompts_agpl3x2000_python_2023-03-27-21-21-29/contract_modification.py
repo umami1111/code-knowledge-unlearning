@@ -1,0 +1,1 @@
+class ContractModification(models.Model):

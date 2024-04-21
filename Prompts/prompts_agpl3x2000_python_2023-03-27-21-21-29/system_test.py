@@ -1,0 +1,1 @@
+class SystemAlertsTest(unittest.TestCase):

@@ -1,0 +1,1 @@
+class JournalLedgerXslx(models.AbstractModel):

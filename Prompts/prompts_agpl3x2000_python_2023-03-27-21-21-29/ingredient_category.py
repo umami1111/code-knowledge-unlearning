@@ -1,0 +1,1 @@
+class IngredientCategory(models.Model):

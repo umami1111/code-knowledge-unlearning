@@ -1,0 +1,1 @@
+class SqlFileWizard(models.TransientModel):

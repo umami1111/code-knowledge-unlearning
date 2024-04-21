@@ -1,0 +1,1 @@
+class WizProductionProductLine(models.TransientModel):

@@ -1,0 +1,1 @@
+class HrDepartment(models.Model):

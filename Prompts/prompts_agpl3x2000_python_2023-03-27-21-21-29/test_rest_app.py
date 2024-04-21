@@ -1,0 +1,1 @@
+class RestAppTest(unittest.TestCase):

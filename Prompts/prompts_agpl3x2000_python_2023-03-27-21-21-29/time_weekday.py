@@ -1,0 +1,1 @@
+class TimeWeekday(models.Model):

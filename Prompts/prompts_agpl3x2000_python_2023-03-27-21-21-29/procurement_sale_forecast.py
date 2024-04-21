@@ -1,0 +1,1 @@
+class ProcurementSaleForecast(models.Model):

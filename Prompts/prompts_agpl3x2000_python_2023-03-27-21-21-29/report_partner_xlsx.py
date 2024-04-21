@@ -1,0 +1,1 @@
+class PartnerXlsx(models.AbstractModel):

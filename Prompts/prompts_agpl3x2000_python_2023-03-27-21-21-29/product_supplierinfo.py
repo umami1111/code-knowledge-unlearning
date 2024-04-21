@@ -1,0 +1,1 @@
+class ProductSupplierinfo(models.Model):

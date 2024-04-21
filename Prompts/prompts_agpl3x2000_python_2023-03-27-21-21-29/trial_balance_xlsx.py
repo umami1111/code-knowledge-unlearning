@@ -1,0 +1,1 @@
+class TrialBalanceXslx(models.AbstractModel):

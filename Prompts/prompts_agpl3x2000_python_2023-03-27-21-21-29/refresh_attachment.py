@@ -1,0 +1,1 @@
+class RefreshAttachmentExtension(markdown.Extension):
