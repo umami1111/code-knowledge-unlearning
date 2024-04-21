@@ -1,0 +1,1 @@
+class RepairType(models.Model):

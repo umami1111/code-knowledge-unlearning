@@ -1,0 +1,1 @@
+class BlankTag(MarcException):

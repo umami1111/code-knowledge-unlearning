@@ -1,0 +1,1 @@
+class Muscle(models.Model):

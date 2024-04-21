@@ -1,0 +1,1 @@
+class ImportPriceFile(models.TransientModel):

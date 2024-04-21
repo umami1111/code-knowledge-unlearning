@@ -1,0 +1,1 @@
+class AlertsModelTest(unittest.TestCase):

@@ -1,0 +1,1 @@
+class ContractLine(models.Model):

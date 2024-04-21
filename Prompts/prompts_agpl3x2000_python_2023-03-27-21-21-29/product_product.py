@@ -1,0 +1,1 @@
+class ProductProduct(models.Model):

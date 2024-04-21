@@ -1,0 +1,1 @@
+class CrmClaim(models.Model):

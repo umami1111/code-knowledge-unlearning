@@ -1,0 +1,1 @@
+class Booknotes(db.CommonExtras):

@@ -1,0 +1,1 @@
+class QcTest(models.Model):

@@ -1,0 +1,1 @@
+class ContractType(m.Model):

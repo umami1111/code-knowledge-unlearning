@@ -1,0 +1,1 @@
+class CheckPermissionApiTestCase(BaseTestCase, ApiBaseTestCase):

@@ -1,0 +1,1 @@
+class MrpProductionWorkcenterLine(models.Model):

@@ -1,0 +1,1 @@
+class TestMachineManager(common.TransactionCase):

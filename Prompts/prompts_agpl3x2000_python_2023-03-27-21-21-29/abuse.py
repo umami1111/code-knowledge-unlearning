@@ -1,0 +1,1 @@
+class AbuseReportForm(formencode.Schema):

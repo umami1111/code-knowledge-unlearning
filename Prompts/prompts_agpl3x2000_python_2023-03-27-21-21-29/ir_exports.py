@@ -1,0 +1,1 @@
+def partition(line, accessor):

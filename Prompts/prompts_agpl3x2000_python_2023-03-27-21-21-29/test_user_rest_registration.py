@@ -1,0 +1,1 @@
+class CreateUserCommand(WgerTestCase):

@@ -1,0 +1,1 @@
+class PastieSlexyOrg(Pastie):

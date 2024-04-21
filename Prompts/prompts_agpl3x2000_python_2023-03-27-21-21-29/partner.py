@@ -1,0 +1,1 @@
+class ResPartner(models.Model):

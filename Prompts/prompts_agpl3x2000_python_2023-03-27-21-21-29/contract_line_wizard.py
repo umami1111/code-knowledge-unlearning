@@ -1,0 +1,1 @@
+class ContractLineWizard(models.TransientModel):

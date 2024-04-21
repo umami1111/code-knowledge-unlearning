@@ -1,0 +1,1 @@
+class OverviewPlanTestCase(WgerTestCase):

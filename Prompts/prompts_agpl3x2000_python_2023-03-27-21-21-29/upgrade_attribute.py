@@ -1,0 +1,1 @@
+class UpgradeAttribute(models.Model):

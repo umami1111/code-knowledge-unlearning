@@ -1,0 +1,1 @@
+class GymNameHeaderTestCase(WgerTestCase):

@@ -1,0 +1,1 @@
+class AbstractReportXslx(models.AbstractModel):

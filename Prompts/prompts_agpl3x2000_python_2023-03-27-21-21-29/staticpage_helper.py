@@ -1,0 +1,1 @@
+def url(staticpage, **kwargs):

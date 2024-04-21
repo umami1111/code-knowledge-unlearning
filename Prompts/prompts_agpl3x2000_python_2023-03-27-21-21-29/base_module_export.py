@@ -1,0 +1,1 @@
+class BaseModuleExport(models.TransientModel):

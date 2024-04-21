@@ -1,0 +1,1 @@
+class UpgradeComparisonConfig(models.Model):

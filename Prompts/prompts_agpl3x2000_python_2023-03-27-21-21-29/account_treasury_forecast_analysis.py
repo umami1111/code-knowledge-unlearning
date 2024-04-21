@@ -1,0 +1,1 @@
+class ReportAccountTreasuryForecastAnalysis(models.Model):

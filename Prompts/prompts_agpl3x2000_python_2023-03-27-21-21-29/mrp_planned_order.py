@@ -1,0 +1,1 @@
+class MrpPlannedOrder(models.Model):

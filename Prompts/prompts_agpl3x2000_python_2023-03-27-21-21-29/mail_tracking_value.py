@@ -1,0 +1,1 @@
+class MailTracking(models.Model):

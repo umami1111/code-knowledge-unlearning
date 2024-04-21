@@ -1,0 +1,1 @@
+class PastiePasteOrgRu(Pastie):

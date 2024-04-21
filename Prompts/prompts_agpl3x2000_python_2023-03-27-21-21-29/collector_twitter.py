@@ -1,0 +1,1 @@
+class TwitterCollectorBot(CollectorBot, HttpMixin):

@@ -1,0 +1,1 @@
+class TestStockPlanningRule(common.TransactionCase):

@@ -1,0 +1,1 @@
+class NutritionPlan(models.Model):

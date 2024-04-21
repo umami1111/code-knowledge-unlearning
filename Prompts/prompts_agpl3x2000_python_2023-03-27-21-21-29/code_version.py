@@ -1,0 +1,1 @@
+class CodeVersion(models.AbstractModel):

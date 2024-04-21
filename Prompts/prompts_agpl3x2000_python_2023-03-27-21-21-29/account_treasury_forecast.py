@@ -1,0 +1,1 @@
+class AccountTreasuryForecastInvoice(models.Model):

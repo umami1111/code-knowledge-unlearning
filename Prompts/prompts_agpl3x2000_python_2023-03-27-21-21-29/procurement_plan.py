@@ -1,0 +1,1 @@
+class ProcurementPlan(models.Model):

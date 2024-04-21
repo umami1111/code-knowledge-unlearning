@@ -1,0 +1,1 @@
+class Equipment(models.Model):

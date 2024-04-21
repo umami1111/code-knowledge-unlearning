@@ -1,0 +1,1 @@
+class TestBookmarks(TestCase):

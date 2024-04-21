@@ -1,0 +1,1 @@
+class PurchaseRequisition(models.Model):

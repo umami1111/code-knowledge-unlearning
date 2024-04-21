@@ -1,0 +1,1 @@
+class ResourceResource(models.Model):

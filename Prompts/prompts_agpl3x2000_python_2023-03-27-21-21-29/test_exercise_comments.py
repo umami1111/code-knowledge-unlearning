@@ -1,0 +1,1 @@
+class ExerciseCommentRepresentationTestCase(WgerTestCase):

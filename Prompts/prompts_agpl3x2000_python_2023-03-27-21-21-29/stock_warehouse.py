@@ -1,0 +1,1 @@
+class StockWarehouse(models.Model):

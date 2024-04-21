@@ -1,0 +1,1 @@
+class ImageProcessor(DisplayingProcessor):

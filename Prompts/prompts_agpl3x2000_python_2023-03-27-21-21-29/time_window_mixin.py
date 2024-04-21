@@ -1,0 +1,1 @@
+class TimeWindowMixin(models.AbstractModel):

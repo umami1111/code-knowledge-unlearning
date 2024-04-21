@@ -1,0 +1,1 @@
+class FieldResolver(models.Model):

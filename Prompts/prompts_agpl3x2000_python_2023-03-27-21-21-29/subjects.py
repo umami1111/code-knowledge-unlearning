@@ -1,0 +1,1 @@
+class subjects(delegate.page):

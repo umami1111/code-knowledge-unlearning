@@ -1,0 +1,1 @@
+class WizStopProductionOperation(models.TransientModel):

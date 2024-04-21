@@ -1,0 +1,1 @@
+class IrFieldsConverter(models.AbstractModel):

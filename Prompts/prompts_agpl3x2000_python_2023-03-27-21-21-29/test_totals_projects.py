@@ -1,0 +1,1 @@
+def test_project_totals_updated_on_activity(client):

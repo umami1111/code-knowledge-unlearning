@@ -1,0 +1,1 @@
+class TestQualityControlVersion(common.TransactionCase):

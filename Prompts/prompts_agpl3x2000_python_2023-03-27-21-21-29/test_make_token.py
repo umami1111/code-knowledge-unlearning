@@ -1,0 +1,1 @@
+class TokenHelperTestCase(WgerTestCase):

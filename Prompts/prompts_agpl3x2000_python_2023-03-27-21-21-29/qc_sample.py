@@ -1,0 +1,1 @@
+class QcSample(models.Model):

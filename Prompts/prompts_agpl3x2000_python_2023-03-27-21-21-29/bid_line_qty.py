@@ -1,0 +1,1 @@
+class BidLineQty(models.TransientModel):

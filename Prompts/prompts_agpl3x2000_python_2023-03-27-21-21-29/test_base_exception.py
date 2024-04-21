@@ -1,0 +1,1 @@
+class TestBaseException(TransactionCase):

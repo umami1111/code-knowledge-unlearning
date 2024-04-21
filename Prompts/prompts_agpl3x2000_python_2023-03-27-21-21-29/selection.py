@@ -1,0 +1,1 @@
+class SelectionCreateForm(formencode.Schema):

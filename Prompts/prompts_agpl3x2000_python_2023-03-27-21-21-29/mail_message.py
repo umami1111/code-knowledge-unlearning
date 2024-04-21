@@ -1,0 +1,1 @@
+class MailMessage(models.Model):

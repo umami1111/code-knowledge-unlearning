@@ -1,0 +1,1 @@
+class Paper(models.Model):

@@ -1,0 +1,1 @@
+class JSONEncoder(json.JSONEncoder):

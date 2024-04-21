@@ -1,0 +1,1 @@
+class TestStockPickingProductKitHelper(common.TransactionCase):

@@ -1,0 +1,1 @@
+class PurchaseOrder(models.Model):

@@ -1,0 +1,1 @@
+class TestStockQuantValuation(common.TransactionCase):

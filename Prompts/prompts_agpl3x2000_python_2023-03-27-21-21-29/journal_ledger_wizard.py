@@ -1,0 +1,1 @@
+class JournalLedgerReportWizard(models.TransientModel):

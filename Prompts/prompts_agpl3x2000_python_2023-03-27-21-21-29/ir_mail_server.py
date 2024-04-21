@@ -1,0 +1,1 @@
+class IrMailServer(models.Model):

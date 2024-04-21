@@ -1,0 +1,1 @@
+class StockInventory(models.Model):

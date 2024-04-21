@@ -1,0 +1,1 @@
+class FetchmailServer(models.Model):

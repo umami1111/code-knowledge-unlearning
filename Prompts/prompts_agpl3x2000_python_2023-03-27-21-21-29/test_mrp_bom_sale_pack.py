@@ -1,0 +1,1 @@
+class TestMrpBomSalePack(common.TransactionCase):

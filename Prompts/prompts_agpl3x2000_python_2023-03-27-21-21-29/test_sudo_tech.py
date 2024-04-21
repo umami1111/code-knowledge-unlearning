@@ -1,0 +1,1 @@
+class SudoTechCase(TransactionCase):

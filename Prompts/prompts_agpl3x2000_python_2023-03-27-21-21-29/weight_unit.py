@@ -1,0 +1,1 @@
+class WeightUnit(models.Model):

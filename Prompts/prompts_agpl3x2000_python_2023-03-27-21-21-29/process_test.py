@@ -1,0 +1,1 @@
+class ProcessAlertsTest(unittest.TestCase):

@@ -1,0 +1,1 @@
+class SmileLog(models.Model):

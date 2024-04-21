@@ -1,0 +1,1 @@
+class TelegramStorage(PastieStorage):

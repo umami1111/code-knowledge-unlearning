@@ -1,0 +1,1 @@
+class PollTile(BaseTile):

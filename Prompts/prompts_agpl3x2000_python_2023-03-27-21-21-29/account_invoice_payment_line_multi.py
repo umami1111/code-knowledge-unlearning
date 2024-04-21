@@ -1,0 +1,1 @@
+class AccountInvoicePaymentLineMulti(models.TransientModel):

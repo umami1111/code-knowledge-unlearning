@@ -1,0 +1,1 @@
+class ServerAlerterTest(unittest.TestCase):

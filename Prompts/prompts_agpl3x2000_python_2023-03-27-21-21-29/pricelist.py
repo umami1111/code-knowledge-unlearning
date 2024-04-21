@@ -1,0 +1,1 @@
+class ProductPricelistItem(models.Model):

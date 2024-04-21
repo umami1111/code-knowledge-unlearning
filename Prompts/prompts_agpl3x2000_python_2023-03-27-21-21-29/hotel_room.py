@@ -1,0 +1,1 @@
+class HotelFloor(models.Model):

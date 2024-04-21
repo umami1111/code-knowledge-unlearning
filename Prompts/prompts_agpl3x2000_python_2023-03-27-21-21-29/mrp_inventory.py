@@ -1,0 +1,1 @@
+class MrpInventory(models.Model):

@@ -1,0 +1,1 @@
+class ConfigUpdateView(WgerFormMixin, UpdateView):

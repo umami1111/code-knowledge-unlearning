@@ -1,0 +1,1 @@
+class CronEntry(models.Model):

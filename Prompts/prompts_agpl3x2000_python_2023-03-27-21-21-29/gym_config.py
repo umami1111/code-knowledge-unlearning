@@ -1,0 +1,1 @@
+class GymConfig(models.Model):

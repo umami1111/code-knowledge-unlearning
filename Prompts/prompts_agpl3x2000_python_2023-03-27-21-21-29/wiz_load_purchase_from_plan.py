@@ -1,0 +1,1 @@
+class WizLoadPurchaseFromPlan(models.TransientModel):

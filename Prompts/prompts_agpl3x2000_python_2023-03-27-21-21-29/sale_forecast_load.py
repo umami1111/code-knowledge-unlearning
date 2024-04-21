@@ -1,0 +1,1 @@
+class SaleForecastLoad(models.TransientModel):

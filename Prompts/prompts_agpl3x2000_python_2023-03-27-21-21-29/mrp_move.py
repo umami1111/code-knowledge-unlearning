@@ -1,0 +1,1 @@
+class MrpMove(models.Model):

@@ -1,0 +1,1 @@
+class GymConfigTestCase(WgerTestCase):

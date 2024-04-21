@@ -1,0 +1,1 @@
+class TestIntelMQProcessManager(unittest.TestCase):

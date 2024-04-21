@@ -1,0 +1,1 @@
+class ReportLabelWizardLine(models.TransientModel):

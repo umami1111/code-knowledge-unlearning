@@ -1,0 +1,1 @@
+class Schedule(models.Model):

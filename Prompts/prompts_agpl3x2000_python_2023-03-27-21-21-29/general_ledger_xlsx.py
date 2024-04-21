@@ -1,0 +1,1 @@
+class GeneralLedgerXslx(models.AbstractModel):

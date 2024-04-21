@@ -1,0 +1,1 @@
+class HrEmployee(models.Model):

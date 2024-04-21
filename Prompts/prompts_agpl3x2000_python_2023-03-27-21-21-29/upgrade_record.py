@@ -1,0 +1,1 @@
+class UpgradeRecord(models.Model):

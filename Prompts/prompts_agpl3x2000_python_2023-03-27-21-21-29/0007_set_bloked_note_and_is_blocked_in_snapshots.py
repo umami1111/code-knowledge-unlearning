@@ -1,0 +1,1 @@
+def set_current_values_of_blocked_note_and_is_blocked_to_the_last_snapshot(apps, schema_editor):

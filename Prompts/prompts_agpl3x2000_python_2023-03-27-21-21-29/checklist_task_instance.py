@@ -1,0 +1,1 @@
+class ChecklistTaskInstance(models.Model):

@@ -1,0 +1,1 @@
+class BarcodeGenerateMixin(models.AbstractModel):

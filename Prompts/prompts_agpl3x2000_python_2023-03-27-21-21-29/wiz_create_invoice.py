@@ -1,0 +1,1 @@
+class WizCreateInvoice(models.TransientModel):

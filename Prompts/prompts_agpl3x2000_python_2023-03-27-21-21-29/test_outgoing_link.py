@@ -1,0 +1,1 @@
+class OutgoingLinkTest(TestController):

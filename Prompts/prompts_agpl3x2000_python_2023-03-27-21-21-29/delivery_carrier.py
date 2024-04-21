@@ -1,0 +1,1 @@
+class DeliveryCarrier(models.Model):

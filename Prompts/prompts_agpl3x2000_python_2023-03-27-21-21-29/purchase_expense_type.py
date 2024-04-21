@@ -1,0 +1,1 @@
+class PurchaseExpenseType(models.Model):

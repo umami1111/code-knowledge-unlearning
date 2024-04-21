@@ -1,0 +1,1 @@
+class AdminUserNote(m.Model):

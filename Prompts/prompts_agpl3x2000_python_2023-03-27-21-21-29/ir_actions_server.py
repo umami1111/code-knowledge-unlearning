@@ -1,0 +1,1 @@
+class IrActionsServer(models.Model):

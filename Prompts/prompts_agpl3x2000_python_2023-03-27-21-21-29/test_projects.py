@@ -1,0 +1,1 @@
+class ExpiredSigner(signing.TimestampSigner):

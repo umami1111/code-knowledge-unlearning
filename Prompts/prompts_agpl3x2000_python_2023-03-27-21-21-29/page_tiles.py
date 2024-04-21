@@ -1,0 +1,1 @@
+class PageTile(DelegateableTile):

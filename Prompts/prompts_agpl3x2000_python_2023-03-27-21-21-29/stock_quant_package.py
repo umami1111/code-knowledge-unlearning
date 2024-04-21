@@ -1,0 +1,1 @@
+class StockQuantPackage(models.Model):

@@ -1,0 +1,1 @@
+class ProposalNewForm(formencode.Schema):

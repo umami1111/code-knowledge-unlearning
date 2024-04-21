@@ -1,0 +1,1 @@
+class TestXmlReport(common.HttpCase):

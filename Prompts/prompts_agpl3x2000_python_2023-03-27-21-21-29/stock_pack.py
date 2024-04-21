@@ -1,0 +1,1 @@
+class StockPackOperation(models.Model):

@@ -1,0 +1,1 @@
+class MrpWorkOrderProduce(models.TransientModel):

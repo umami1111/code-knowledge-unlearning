@@ -1,0 +1,1 @@
+class MaintenanceEquipment(models.Model):

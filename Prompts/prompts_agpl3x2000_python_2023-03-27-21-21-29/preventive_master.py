@@ -1,0 +1,1 @@
+class PreventiveMaster(models.Model):

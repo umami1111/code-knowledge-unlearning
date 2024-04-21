@@ -1,0 +1,1 @@
+class TestComponentOperation(common.SavepointCase):

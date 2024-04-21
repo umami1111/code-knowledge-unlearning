@@ -1,0 +1,1 @@
+class PopupMessage(models.Model):

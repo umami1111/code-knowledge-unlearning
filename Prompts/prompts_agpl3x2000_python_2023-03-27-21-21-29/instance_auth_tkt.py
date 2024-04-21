@@ -1,0 +1,1 @@
+class InstanceAuthTktCookiePlugin(AuthTktCookiePlugin):

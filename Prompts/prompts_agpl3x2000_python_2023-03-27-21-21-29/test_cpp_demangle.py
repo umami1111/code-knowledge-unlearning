@@ -1,0 +1,1 @@
+class CppDemangleTest(unittest.TestCase):

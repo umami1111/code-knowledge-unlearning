@@ -1,0 +1,1 @@
+class TestProductVariant(TransactionCase):

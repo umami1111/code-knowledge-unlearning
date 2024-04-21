@@ -1,0 +1,1 @@
+class MrpTag(models.Model):

@@ -1,0 +1,1 @@
+class CheckerTest(unittest.TestCase):

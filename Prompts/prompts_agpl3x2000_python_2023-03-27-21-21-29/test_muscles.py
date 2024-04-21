@@ -1,0 +1,1 @@
+class MuscleRepresentationTestCase(WgerTestCase):

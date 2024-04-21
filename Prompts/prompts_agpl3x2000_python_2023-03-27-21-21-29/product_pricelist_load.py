@@ -1,0 +1,1 @@
+class ProductPricelistLoad(models.Model):

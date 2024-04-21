@@ -1,0 +1,1 @@
+class IrRule(models.AbstractModel):

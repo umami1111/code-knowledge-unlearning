@@ -1,0 +1,1 @@
+class QcTrigger(models.Model):

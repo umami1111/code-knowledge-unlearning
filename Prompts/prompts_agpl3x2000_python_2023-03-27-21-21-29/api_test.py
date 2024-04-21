@@ -1,0 +1,1 @@
+class TestDashboardAPI(TestCase):

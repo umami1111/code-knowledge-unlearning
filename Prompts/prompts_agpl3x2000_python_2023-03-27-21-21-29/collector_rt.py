@@ -1,0 +1,1 @@
+class RTCollectorBot(CollectorBot, HttpMixin):

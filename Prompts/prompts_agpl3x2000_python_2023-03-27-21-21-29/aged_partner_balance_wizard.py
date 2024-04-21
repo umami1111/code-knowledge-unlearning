@@ -1,0 +1,1 @@
+class AgedPartnerBalanceWizard(models.TransientModel):

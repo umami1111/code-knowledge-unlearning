@@ -1,0 +1,1 @@
+class MailURLCollectorBot(MailCollectorBot, HttpMixin):

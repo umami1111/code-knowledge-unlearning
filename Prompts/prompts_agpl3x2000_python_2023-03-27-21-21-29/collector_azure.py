@@ -1,0 +1,1 @@
+class MicrosoftAzureCollectorBot(CollectorBot, CacheMixin):

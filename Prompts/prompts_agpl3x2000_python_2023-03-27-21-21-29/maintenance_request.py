@@ -1,0 +1,1 @@
+class MaintenanceRequest(models.Model):

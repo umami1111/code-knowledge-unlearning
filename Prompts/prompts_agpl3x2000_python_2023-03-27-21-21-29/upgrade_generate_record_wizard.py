@@ -1,0 +1,1 @@
+class GenerateWizard(models.TransientModel):

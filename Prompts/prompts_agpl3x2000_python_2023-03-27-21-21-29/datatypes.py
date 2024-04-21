@@ -1,0 +1,1 @@
+class BotType(str, Enum):

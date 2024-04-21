@@ -1,0 +1,1 @@
+class ContractTerminateReason(models.Model):

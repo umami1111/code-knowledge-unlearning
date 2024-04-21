@@ -1,0 +1,1 @@
+class TestPaymentOrderTierValidation(common.SavepointCase):

@@ -1,0 +1,1 @@
+class ContractTag(models.Model):

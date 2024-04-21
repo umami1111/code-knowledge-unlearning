@@ -1,0 +1,1 @@
+def test_userstory_custom_attribute_duplicate_name_error_on_create(client):

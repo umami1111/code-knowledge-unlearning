@@ -1,0 +1,1 @@
+def test_create_wiki_link_of_existent_wiki_page_with_permissions(client):

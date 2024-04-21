@@ -1,0 +1,1 @@
+class ExceptionRuleConfirm(models.AbstractModel):

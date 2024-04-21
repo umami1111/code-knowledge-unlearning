@@ -1,0 +1,1 @@
+class StockHistory(models.Model):

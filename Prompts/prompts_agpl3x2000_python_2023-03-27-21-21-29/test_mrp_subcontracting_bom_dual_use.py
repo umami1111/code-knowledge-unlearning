@@ -1,0 +1,1 @@
+class TestMrpSubcontractingBomDualUse(common.SavepointCase):

@@ -1,0 +1,1 @@
+class AuditlogtHTTPSession(models.Model):

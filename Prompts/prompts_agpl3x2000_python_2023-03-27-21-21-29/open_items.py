@@ -1,0 +1,1 @@
+class OpenItemsReport(models.AbstractModel):

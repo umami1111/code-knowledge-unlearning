@@ -1,0 +1,1 @@
+class FolioReport(models.AbstractModel):

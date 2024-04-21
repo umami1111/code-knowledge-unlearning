@@ -1,0 +1,1 @@
+class AbstractSomething(models.AbstractModel):

@@ -1,0 +1,1 @@
+class TestMrpPackaging(common.TransactionCase):

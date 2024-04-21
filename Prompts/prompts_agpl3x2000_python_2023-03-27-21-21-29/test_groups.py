@@ -1,0 +1,1 @@
+class TestGroups(TransactionCase):

@@ -1,0 +1,1 @@
+class StockQuantPackageMove(models.TransientModel):

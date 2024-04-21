@@ -1,0 +1,1 @@
+class NmcAuxPowChain(BaseChain):

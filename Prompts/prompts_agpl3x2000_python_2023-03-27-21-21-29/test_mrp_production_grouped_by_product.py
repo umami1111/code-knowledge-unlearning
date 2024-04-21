@@ -1,0 +1,1 @@
+class TestProductionGroupedByProduct(common.SavepointCase):

@@ -1,0 +1,1 @@
+class TestHotel(common.TransactionCase):

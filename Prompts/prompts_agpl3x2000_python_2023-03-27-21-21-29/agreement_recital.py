@@ -1,0 +1,1 @@
+class AgreementRecital(models.Model):

@@ -1,0 +1,1 @@
+class StockQuantMove(models.TransientModel):

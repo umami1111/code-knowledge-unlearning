@@ -1,0 +1,1 @@
+class IcalToolsTestCase(WgerTestCase):

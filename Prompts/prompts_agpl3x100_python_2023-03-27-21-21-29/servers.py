@@ -1,0 +1,1 @@
+class ServersListView(SaveRequestHistoryMixin, APIView):

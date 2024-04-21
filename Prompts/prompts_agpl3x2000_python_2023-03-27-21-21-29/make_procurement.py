@@ -1,0 +1,1 @@
+class MakeProcurement(models.TransientModel):

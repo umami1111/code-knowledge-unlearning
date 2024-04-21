@@ -1,0 +1,1 @@
+class TestMrpRepairFullEditable(common.TransactionCase):

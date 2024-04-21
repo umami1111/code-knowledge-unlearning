@@ -1,0 +1,1 @@
+class BiSQLView(models.Model):

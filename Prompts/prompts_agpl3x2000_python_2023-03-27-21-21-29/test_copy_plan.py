@@ -1,0 +1,1 @@
+class CopyPlanTestCase(WgerTestCase):

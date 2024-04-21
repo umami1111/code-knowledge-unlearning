@@ -1,0 +1,1 @@
+class TestPurchaseProductVariants(common.TransactionCase):

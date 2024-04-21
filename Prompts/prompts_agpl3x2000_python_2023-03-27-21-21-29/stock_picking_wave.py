@@ -1,0 +1,1 @@
+class StockPickingWave(models.Model):

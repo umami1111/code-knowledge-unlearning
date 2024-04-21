@@ -1,0 +1,1 @@
+class TestAllowedProduct(common.TransactionCase):

@@ -1,0 +1,1 @@
+class PurchaseForecastLoad(models.TransientModel):

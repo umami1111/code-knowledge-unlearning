@@ -1,0 +1,1 @@
+class BadLength(MarcException):

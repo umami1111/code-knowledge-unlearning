@@ -1,0 +1,1 @@
+class RepairLine(models.Model):

@@ -1,0 +1,1 @@
+class IrExportsLine(models.Model):

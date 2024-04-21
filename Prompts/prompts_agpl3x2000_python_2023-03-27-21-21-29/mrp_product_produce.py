@@ -1,0 +1,1 @@
+class MrpProductProduce(models.TransientModel):

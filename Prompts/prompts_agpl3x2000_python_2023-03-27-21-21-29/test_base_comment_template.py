@@ -1,0 +1,1 @@
+class TestCommentTemplate(common.TransactionCase):

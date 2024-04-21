@@ -1,0 +1,1 @@
+class ExceptionRule(models.Model):

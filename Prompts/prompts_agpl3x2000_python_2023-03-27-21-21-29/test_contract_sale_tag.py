@@ -1,0 +1,1 @@
+class TestContractTagsSale(ContractSaleTagsCommon, SavepointCase):

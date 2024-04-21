@@ -1,0 +1,1 @@
+class MrpComponentOperation(models.Model):

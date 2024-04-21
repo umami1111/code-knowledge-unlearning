@@ -1,0 +1,1 @@
+class PreventiveRepairOrder(models.TransientModel):

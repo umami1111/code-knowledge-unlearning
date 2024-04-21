@@ -1,0 +1,1 @@
+class MailTemplate(models.Model):

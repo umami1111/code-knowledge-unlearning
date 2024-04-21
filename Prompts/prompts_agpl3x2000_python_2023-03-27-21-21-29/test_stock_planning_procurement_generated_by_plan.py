@@ -1,0 +1,1 @@
+class TestStockPlanningProcurementGeneratedByPlan(common.TransactionCase):

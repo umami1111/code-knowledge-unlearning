@@ -1,0 +1,1 @@
+class SearchExerciseApiTestCase(BaseTestCase, ApiBaseTestCase):

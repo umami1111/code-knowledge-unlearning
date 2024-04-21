@@ -1,0 +1,1 @@
+def test_create_user_story_attachment_without_file(client):

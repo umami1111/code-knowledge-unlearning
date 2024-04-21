@@ -1,0 +1,1 @@
+class SpacedLinkExtension(markdown.Extension):

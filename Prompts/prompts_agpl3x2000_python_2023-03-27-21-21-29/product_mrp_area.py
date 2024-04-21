@@ -1,0 +1,1 @@
+class ProductMRPArea(models.Model):

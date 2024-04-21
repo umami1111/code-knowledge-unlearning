@@ -1,0 +1,1 @@
+class TestMrpPackagingExpiry(common.TransactionCase):

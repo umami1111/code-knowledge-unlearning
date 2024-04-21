@@ -1,0 +1,1 @@
+class AccountInvoice(models.Model):

@@ -1,0 +1,1 @@
+class AuditLog(models.Model):

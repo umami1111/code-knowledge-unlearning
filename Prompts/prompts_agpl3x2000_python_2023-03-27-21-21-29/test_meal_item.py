@@ -1,0 +1,1 @@
+class EditMealItemUnitTestCase(WgerEditTestCase):

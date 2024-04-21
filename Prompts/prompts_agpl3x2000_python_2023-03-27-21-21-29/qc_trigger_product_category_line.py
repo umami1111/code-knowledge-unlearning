@@ -1,0 +1,1 @@
+class QcTriggerProductCategoryLine(models.Model):

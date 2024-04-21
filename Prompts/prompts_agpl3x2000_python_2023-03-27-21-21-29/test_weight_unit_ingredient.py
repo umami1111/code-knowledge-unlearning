@@ -1,0 +1,1 @@
+class WeightUnitIngredientRepresentationTestCase(WgerTestCase):

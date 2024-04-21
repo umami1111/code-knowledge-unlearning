@@ -1,0 +1,1 @@
+class ContractTemplateLine(models.Model):

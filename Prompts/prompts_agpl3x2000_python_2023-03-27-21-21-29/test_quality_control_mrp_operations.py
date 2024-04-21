@@ -1,0 +1,1 @@
+class TestQualityControlMrpOperations(common.TransactionCase):
