@@ -10,47 +10,27 @@ import subprocess
 
 NUM_PER_PROMPT = 10
 
+from joblib import Parallel, delayed
+import tempfile
+
+
 def check_file(test, source, language):
-    match_results = "match_" + test.split("/")[-1].split(".")[0] + ".txt"
-    subprocess.call("node dolos_match.js " + test + " " + source + " > " + match_results, shell=True)
-
-    file_extension = test.split(".")[-1]
-    temp_matched = "temp." + file_extension
-
+    dolos_result = subprocess.call("node dolos_match.js " + test + " " + source, shell=True, stdout=subprocess.PIPE)
     dolos_score = 0
-
-    if os.stat(match_results).st_size == 0:
-        print("No matched code snippets")
-
-    else:
-        with open(match_results, "r") as f:
-            for line in f:
-                start_line_number = line.split("matches with")[1].split("}")[0].split("{")[1].split(",")[0]
-                end_line_number = line.split("matches with")[1].split("}")[0].split("{")[1].split(",")[1].split("->")[1].replace(" ", "")
-                start_line_number = str(int(start_line_number) + 1)
-                end_line_number = str(int(end_line_number) + 1)
-                # Use sed to get the matched code snippets
-                subprocess.call(["sed", "-n", start_line_number + "," + end_line_number + "p", source], stdout=open(temp_matched, "a"))
-
-        dolos_result = subprocess.run(["node", "dolos_score.js", test, temp_matched], stdout=subprocess.PIPE)
-        try:
-            dolos_score = dolos_result.stdout.decode().split("Similarity: ")[1].replace("\n", "")
-        except:
-            dolos_score = 0
-
-    subprocess.call("rm -rf " + temp_matched, shell=True)
-    subprocess.call("rm -rf " + match_results, shell=True)
-
+    try:
+        dolos_score = dolos_result.stdout.decode().split("Similarity: ")[1].replace("\n", "")
+    except:
+        dolos_score = 0
     return dolos_score
 
 def evaluate_similarity(prompt, generated_text, source, language='python'):
-    # For testing purposes, we'll use a random similarity score
-    with open("./gen_temp.py", "w") as f:
+    with tempfile.NamedTemporaryFile(mode="w+", suffix='.py') as f:
         f.write(generated_text)
-    dolos_score = check_file("./gen_temp.py", source, language)
+        f.flush()
+        dolos_score = check_file(f.name, source, language)
     return float(dolos_score)
 
-def generate_code_with_filtering(model, tokenizer, prompt, source_paths, max_new_tokens=256, similarity_threshold=0.5, chunk_size=60, device='cuda', num_sequences=1):
+def generate_code_with_filtering(model, tokenizer, prompt, source_paths, max_new_tokens=256, similarity_threshold=0.5, chunk_size=50, device='cuda', num_sequences=1):
     if isinstance(prompt, str):
         input_sequences = [prompt] * num_sequences
     elif isinstance(prompt, list):
@@ -76,23 +56,24 @@ def generate_code_with_filtering(model, tokenizer, prompt, source_paths, max_new
         )
 
         generated_texts = tokenizer.batch_decode(outputs['sequences'], skip_special_tokens=True)
-        similarity_scores = [evaluate_similarity(prompt, gen_text, source_paths[idx//num_sequences]) for idx, gen_text in enumerate(generated_texts)]
-        # print(f"Generated: {generated_texts}", flush=True)
-        # print(f"Sim score: {similarity_scores}", flush=True)
+
+        # similarity_scores = [evaluate_similarity(prompt, gen_text, source_paths[idx//num_sequences]) for idx, gen_text in enumerate(generated_texts)]
+        similarity_scores = Parallel(n_jobs=-1)(delayed(evaluate_similarity)(
+            prompt,
+            gen_text,
+            source_paths[idx//num_sequences])
+            for idx, gen_text in enumerate(generated_texts))
 
         for i in range(len(input_sequences)):
             if similarity_scores[i] > similarity_threshold:
                 # Roll back one token for this sequence
                 current_token = outputs['sequences'][i][-1].item()
-                # print(outputs['scores'][-1][i].unique().shape, flush=True)
                 while True:
                     # set current token score to -inf
                     outputs['scores'][-1][i][current_token] = -float('inf')
 
                     # Check if all logits are -inf (no valid tokens left)
                     if torch.all(outputs['scores'][-1][i] == -float('inf')).item():
-                        # Add EOS token and terminate generation for this sequence
-                        # print(f"\t [{current_token}] -> [{tokenizer.eos_token_id}]", flush=True)
                         outputs['sequences'][i][-1] = tokenizer.eos_token_id
                         input_sequences[i] = tokenizer.decode(outputs['sequences'][i][:-1], skip_special_tokens=True)
                         finished[i] = 1
@@ -101,7 +82,6 @@ def generate_code_with_filtering(model, tokenizer, prompt, source_paths, max_new
                     # sample new token
                     next_token = torch.multinomial(torch.nn.functional.softmax(outputs['scores'][-1][i], dim=-1), num_samples=1)
                     outputs['sequences'][i][-1] = next_token
-                    # print(f"\t [{current_token}] -> [{next_token.item()}]", flush=True)
                     current_token = next_token.item()
 
                     # Check the similarity score for the new token
@@ -112,7 +92,6 @@ def generate_code_with_filtering(model, tokenizer, prompt, source_paths, max_new
                         break
             if finished[i]==0:
                 input_sequences[i] = tokenizer.decode(outputs['sequences'][i], skip_special_tokens=True)
-    os.remove("./gen_temp.py")
     return input_sequences
 
 def codeparrot(model, tokenizer, prompts, output_paths, source_paths, num_prompts_per_gen=1):
@@ -136,6 +115,8 @@ def codeparrot(model, tokenizer, prompts, output_paths, source_paths, num_prompt
 
 
 if __name__=='__main__':
+    import os
+    os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
     start_time = datetime.now()
 
