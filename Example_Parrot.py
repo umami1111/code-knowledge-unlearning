@@ -24,9 +24,7 @@ def codeparrot(prompts, model_name, output_paths, num_prompts_per_gen=1):
         #   https://github.com/huggingface/transformers/issues/21202
         # Since gpt2 doesn't have a pad_token
         if not pipe.tokenizer.special_tokens_map.get("pad_token"):
-            pad_token = {"pad_token":"<|endoftext|>"}
-            pipe.tokenizer.add_special_tokens(pad_token)
-            pipe.model.resize_token_embeddings(len(pipe.tokenizer))
+            pipe.tokenizer.pad_token = pipe.tokenizer.eos_token
         # Make sure the padding_side is 'left' (if you open gpt2tokenizer you will find that by default
         # the padding_side is 'right')
         # cf.

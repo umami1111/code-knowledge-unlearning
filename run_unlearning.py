@@ -121,12 +121,16 @@ def create_unlearn_dataloader(tokenizer, dataset, fraction=1.0, batch_size=4):
             tokenized = tokenizer(f"{question}\n{answer}", truncation=True, padding="max_length")
             results["input_ids"].append(tokenized["input_ids"])
             results["attention_mask"].append(tokenized["attention_mask"])
-            test_text = f"{question}\n"
-            test_tokenized = tokenizer(
-                test_text, truncation=True,
-                #padding="max_length"  # NOTE: Comment out the argument provided in the original implementation because using this means len(test_tokenized["input_ids"]) is always the max_length.
-            )
-            results["start_locs"].append(len(test_tokenized["input_ids"]) - 1)
+            
+            # test_text = f"{question}\n"
+            # test_tokenized = tokenizer(
+            #     test_text, truncation=True,
+            #     #padding="max_length"  # NOTE: Comment out the argument provided in the original implementation because using this means len(test_tokenized["input_ids"]) is always the max_length.
+            # )
+            # results["start_locs"].append(len(test_tokenized["input_ids"]) - 1)
+
+            # Need to set a different start index for left-padding?
+            results["start_locs"].append(len(results["input_ids"]) - len(tokenizer(answer, truncation=True)))
 
         return results
 
@@ -185,8 +189,9 @@ def get_answer_loss(operation, batch, model, device="cuda:0"):
         assert len(position_weight) == len(position_loss) + 1
         position_weight[one_st:] = 1  # only focus on answer part
 
+        # Should not do this 0 filling for left-padding?
         # Ignore the padding part.
-        position_weight[one_inp == 1] = 0
+        # position_weight[one_inp == 1] = 0
         if position_weight.sum() > 0:
             position_weight = position_weight / position_weight.sum()
 
@@ -233,7 +238,7 @@ def evaluate(args):
 parser = HfArgumentParser(TrainingArguments)
 parser.add_argument("--data_dir", type=str, default="data/unlearning", help="Dataset dir.")
 parser.add_argument("--model_name", type=str, default="codeparrot/codeparrot-small", help="Model name.")
-parser.add_argument("--turn_off_lora", type=bool, default=False, help="Turn off LoRA.")
+parser.add_argument("--turn_off_lora", action="store_true", help="Turn off LoRA.")
 parser.add_argument("--lora_r", type=int, default=8, help="r for LoRA. Ignored when turn_off_lora=True")
 parser.add_argument("--tokenized", type=bool, default=False, help="Dataset is tokenized or not.")
 parser.add_argument("--shuffle_buffer", type=int, default=10000, help="Size of buffer used to shuffle streaming dataset.")
@@ -277,9 +282,10 @@ samples_per_step = accelerator.state.num_processes * args.per_device_train_batch
 set_seed(args.seed)
 
 tokenizer = AutoTokenizer.from_pretrained(args.model_name)
-tokenizer.add_special_tokens({"pad_token": "[PAD]"})
 model = AutoModelForCausalLM.from_pretrained(args.model_name)
-model.resize_token_embeddings(len(tokenizer))
+if model.__class__.__name__.startswith("GPT2"):
+    tokenizer.pad_token = tokenizer.eos_token
+    tokenizer.padding_side = "left"
 
 if not args.turn_off_lora:
     config = LoraConfig(
@@ -293,7 +299,7 @@ if not args.turn_off_lora:
 
 print(tokenizer)
 print(model)
-train_dataset = load_dataset(path="data/unlearning", split="train")
+train_dataset = load_dataset(path=args.data_dir, split="train")
 train_dataloader = create_unlearn_dataloader(tokenizer, dataset=train_dataset, batch_size=args.per_device_train_batch_size)
 #print(train_dataloader)
 optimizer = AdamW(get_grouped_params(model, args), lr=args.learning_rate)
@@ -349,7 +355,7 @@ for step, batch in enumerate(tqdm(train_dataloader), start=1):
 from transformers import pipeline
 prompt = "class DataUpdate(BaseDataUpdate):\n"
 generator = pipeline("text-generation", model=model, tokenizer=tokenizer)
-print(generator(prompt)[0]["generated_text"])
+print(generator(prompt, max_length=256)[0]["generated_text"])
 
 # FIXME
 accelerator.wait_for_everyone()
