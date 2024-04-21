@@ -15,7 +15,7 @@ import tempfile
 
 
 def check_file(test, source, language):
-    dolos_result = subprocess.call("node dolos_match.js " + test + " " + source, shell=True, stdout=subprocess.PIPE)
+    dolos_result = subprocess.run([f"node dolos_match_and_score.js {test} {source}"], shell=True, stdout=subprocess.PIPE)
     dolos_score = 0
     try:
         dolos_score = dolos_result.stdout.decode().split("Similarity: ")[1].replace("\n", "")
@@ -41,9 +41,7 @@ def generate_code_with_filtering(model, tokenizer, prompt, source_paths, max_new
     finished = [0] * len(input_sequences)
 
     for _ in range(max_new_tokens // chunk_size):
-        # print(f"Input: {input_sequences}", flush=True)
         encoded = tokenizer(input_sequences, return_tensors="pt", padding=True).to(device)
-        # print(encoded)
         outputs = model.generate(
             **encoded,
             max_new_tokens=chunk_size,
