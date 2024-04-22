@@ -59,7 +59,7 @@ $ python3 Example_Parrot.py codeparrot/codeparrot prompts_agpl3_python_2023-03-2
 
 To generate programs faster, give to the third argument the number of prompts to be used for generation at a time.
 ```
-$ python3 Example_Parrot.py codeparrot/codeparrot-small prompts_agpl3_python_2023-03-27-21-21-29 32
+$ python3 Example_Parrot.py codeparrot/codeparrot-small prompts_agpl3_python_2023-03-27-21-21-29 --num_prompts_per_gen 32
 ```
 
 As far as I can see, with 32GB GPU,

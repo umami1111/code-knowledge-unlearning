@@ -1,6 +1,7 @@
 # This is an example script that uses CodeParrot to generate programs for a given set of prompts.
 # model options: codeparrot/codeparrot, codeparrot/codeparrot-small
 
+import argparse
 import os
 import sys
 from datetime import datetime
@@ -11,7 +12,6 @@ NUM_PER_PROMPT = 10
 
 
 def create_pipeline(model_name_or_path, num_prompts_per_gen=1):
-    #pipe = pipeline("text-generation", model=model_name_or_path, pad_token_id=50256, device=0, batch_size=num_prompts_per_gen)
     tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
     model = AutoModelForCausalLM.from_pretrained(model_name_or_path)
     pipe = pipeline("text-generation", model=model, tokenizer=tokenizer, pad_token_id=50256, device=0, batch_size=num_prompts_per_gen)
@@ -33,7 +33,7 @@ def create_pipeline(model_name_or_path, num_prompts_per_gen=1):
     return pipe
 
 
-def generate_with_pipeline(pipe, prompts, output_paths):
+def generate_with_pipeline(pipe, prompts, output_paths, num_prompts_per_gen):
     if type(prompts) == str:
         assert type(output_paths) == str
         prompts = [prompts]
@@ -55,25 +55,29 @@ if __name__=='__main__':
 
     start_time = datetime.now()
 
-    model_name_or_path = sys.argv[1]
-    prompt_folder = sys.argv[2]
-    num_prompts_per_gen = int(sys.argv[3]) if len(sys.argv) > 3 else 1
+    parser = argparse.ArgumentParser()
+    parser.add_argument("model_name_or_path", type=str)
+    parser.add_argument("prompt_folder", type=str, help="Name of prompt directory in Prompts")
+    parser.add_argument("--output_prefix", type=str, default=None, help="Prefix of output directory created under Programs")
+    parser.add_argument("--num_prompts_per_gen", type=int, default=8, help="Number of prompts bathed in a single generation")
+    args = parser.parse_args()
+    print(args)
 
-    if model_name_or_path == "codeparrot/codeparrot":
-        model = "CodeParrot"
-    elif model_name_or_path == "codeparrot/codeparrot-small":
-        model = "CodeParrotSmall"
+    if args.model_name_or_path == "codeparrot/codeparrot":
+        output_prefix = "CodeParrot"
+    elif args.model_name_or_path == "codeparrot/codeparrot-small":
+        output_prefix = "CodeParrotSmall"
     else:
-        model = "UnknownModel"
-        # print("Usage: python3 Example_Parrot.py codeparrot/codeparrot <prompt_folder> OR python3 Example_Parrot.py codeparrot/codeparrot-small <prompt_folder>")
-        # exit(1)
+        assert args.output_prefix != None
+        output_prefix = args.output_prefix
+
     root_path = ""
-    prompt_path = root_path + "Prompts" + "/" + prompt_folder + "/"
-    program_path = root_path + "Programs" + "/" + prompt_folder.replace("prompts", model) + "/"
+    prompt_path = root_path + "Prompts" + "/" + args.prompt_folder + "/"
+    program_path = root_path + "Programs" + "/" + args.prompt_folder.replace("prompts", output_prefix) + "/"
     if not os.path.exists(program_path):
         os.makedirs(program_path)
 
-    pipe = create_pipeline(model_name_or_path, num_prompts_per_gen=num_prompts_per_gen)
+    pipe = create_pipeline(args.model_name_or_path, num_prompts_per_gen=args.num_prompts_per_gen)
 
     # Loop over the programs in the path
     prompts = []
@@ -93,16 +97,13 @@ if __name__=='__main__':
                 prompt = f.read()
                 prompts.append(prompt)
                 output_paths.append(output_path)
-                #codeparrot(prompt, model_name_or_path, program_path + filename)
-                if len(prompts) == num_prompts_per_gen:
-                    #codeparrot(prompts, model_name_or_path, output_paths, num_prompts_per_gen=num_prompts_per_gen)
-                    generate_with_pipeline(pipe, prompts, output_paths)
+                if len(prompts) == args.num_prompts_per_gen:
+                    generate_with_pipeline(pipe, prompts, output_paths, args.num_prompts_per_gen)
                     prompts = []
                     output_paths = []
 
     if len(prompts) > 0:
-        #codeparrot(prompts, model_name_or_path, output_paths)
-        generate_with_pipeline(pipe, prompts, output_paths)
+        generate_with_pipeline(pipe, prompts, output_paths, args.num_prompts_per_gen)
 
     end_time = datetime.now()
 

@@ -14,88 +14,12 @@ from huggingface_hub import Repository
 from torch.optim import AdamW
 from torch.utils.data import IterableDataset
 from torch.utils.data.dataloader import DataLoader
-from torch.utils.data.datapipes.iter.combinatorics import ShufflerIterDataPipe
 
 import transformers
 from transformers import AutoModelForCausalLM, AutoTokenizer, DataCollatorForLanguageModeling, HfArgumentParser, get_scheduler, set_seed, pipeline
 
 import peft
 from peft import LoraConfig, get_peft_model
-
-
-class ConstantLengthDataset(IterableDataset):
-    """
-    Iterable dataset that returns constant length chunks of tokens from stream of text files.
-        Args:
-            tokenizer (Tokenizer): The processor used for proccessing the data.
-            dataset (dataset.Dataset): Dataset with text files.
-            infinite (bool): If True the iterator is reset after dataset reaches end else stops.
-            seq_length (int): Length of token sequences to return.
-            num_of_sequences (int): Number of token sequences to keep in buffer.
-            chars_per_token (int): Number of characters per token used to estimate number of tokens in text buffer.
-            tokenized (bool): If true we use a pretokenized dataset.
-    """
-
-    def __init__(
-        self,
-        tokenizer,
-        dataset,
-        infinite=False,
-        seq_length=1024,
-        num_of_sequences=1024,
-        chars_per_token=3.6,
-        tokenized=False,
-    ):
-        self.tokenizer = tokenizer
-        self.concat_token_id = tokenizer.bos_token_id
-        self.dataset = dataset
-        self.seq_length = seq_length
-        self.epoch = 0
-        self.infinite = infinite
-        self.current_size = 0
-        self.tokenized = tokenized
-
-        if self.tokenized:
-            self.max_buffer_size = seq_length * num_of_sequences
-            self.content_field = "input_ids"
-        else:
-            self.max_buffer_size = seq_length * chars_per_token * num_of_sequences
-            self.content_field = "content"
-
-    def __iter__(self):
-        iterator = iter(self.dataset)
-        more_examples = True
-        while more_examples:
-            buffer, buffer_len = [], 0
-            while True:
-                if buffer_len >= self.max_buffer_size:
-                    break
-                try:
-                    buffer.append(next(iterator)[self.content_field])
-                    buffer_len += len(buffer[-1])
-                except StopIteration:
-                    if self.infinite:
-                        iterator = iter(self.dataset)
-                        self.epoch += 1
-                        logger.info(f"Dataset epoch: {self.epoch}")
-                    else:
-                        more_examples = False
-                        break
-            if self.tokenized:
-                tokenized_inputs = buffer
-            else:
-                tokenized_inputs = self.tokenizer(buffer, truncation=False)["input_ids"]
-            all_token_ids = []
-            for tokenized_input in tokenized_inputs:
-                all_token_ids.extend(tokenized_input + [self.concat_token_id])
-            for i in range(0, len(all_token_ids), self.seq_length):
-                input_ids = all_token_ids[i : i + self.seq_length]
-                if len(input_ids) == self.seq_length:
-                    self.current_size += 1
-                    yield torch.tensor(input_ids)
-
-    def shuffle(self, buffer_size=1000):
-        return ShufflerIterDataPipe(self, buffer_size=buffer_size)
 
 
 def create_unlearn_dataloader(tokenizer, dataset, fraction=1.0, batch_size=4):
@@ -215,25 +139,6 @@ def get_grouped_params(model, args, no_decay=["bias", "ln_1.weight", "ln_2.weigh
     ]
 
 
-def evaluate(args):
-    model.eval()
-    losses = []
-    for step, batch in enumerate(eval_dataloader):
-        with torch.no_grad():
-            outputs = model(batch, labels=batch)
-        loss = outputs.loss.repeat(args.valid_batch_size)
-        losses.append(accelerator.gather(loss))
-        if args.max_eval_steps > 0 and step >= args.max_eval_steps:
-            break
-    losses = torch.cat(losses)
-    loss = losses[: eval_dataloader.dataset.current_size].mean()
-    try:
-        perplexity = torch.exp(loss)
-    except OverflowError:
-        perplexity = float("inf")
-    return loss.item(), perplexity.item()
-
-
 # args
 parser = HfArgumentParser(TrainingArguments)
 parser.add_argument("--data_dir", type=str, default="data/unlearning", help="Dataset dir.")
@@ -241,8 +146,6 @@ parser.add_argument("--model_name", type=str, default="codeparrot/codeparrot-sma
 parser.add_argument("--turn_off_lora", action="store_true", help="Turn off LoRA.")
 parser.add_argument("--lora_r", type=int, default=8, help="r for LoRA. Ignored when turn_off_lora=True")
 parser.add_argument("--tokenized", type=bool, default=False, help="Dataset is tokenized or not.")
-parser.add_argument("--shuffle_buffer", type=int, default=10000, help="Size of buffer used to shuffle streaming dataset.")
-parser.add_argument("--seq_length", type=int, default=1024, help="Sequence lengths used for training.")
 parser.add_argument("--lambda", type=float, default=1e-1, help="Coefficient for maintain loss.")
 parser.add_argument("--max_unlearn_loss", type=float, default=100, help="Maximum loss on bad samples to terminate.")
 args = parser.parse_args()
@@ -301,6 +204,7 @@ if not args.turn_off_lora:
 print(tokenizer)
 print(model)
 train_dataset = load_dataset(path=args.data_dir, split="train")
+train_dataset = train_dataset.shuffle()
 print(train_dataset)
 train_dataloader = create_unlearn_dataloader(tokenizer, dataset=train_dataset, batch_size=args.per_device_train_batch_size)
 #print(train_dataloader)

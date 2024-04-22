@@ -83,7 +83,7 @@ class ConstantLengthDataset(IterableDataset):
             if self.tokenized:
                 tokenized_inputs = buffer
             else:
-                tokenized_inputs = self.tokenizer(buffer, truncation=False)["input_ids"]
+                tokenized_inputs = self.tokenizer(buffer, padding=False, truncation=False)["input_ids"]
             all_token_ids = []
             for tokenized_input in tokenized_inputs:
                 all_token_ids.extend(tokenized_input + [self.concat_token_id])
@@ -98,7 +98,7 @@ class ConstantLengthDataset(IterableDataset):
 
 
 def create_dataloader(src_dir, tokenizer, seq_length, shuffle_buffer, batch_size):
-    src_dir = Path("Source/source_mit_python_2023-03-28-14-47-19")
+    src_dir = Path(src_dir)
     data = []
     for p in src_dir.glob("*.py"):
         with open(p, "r", encoding="utf-8") as f:
