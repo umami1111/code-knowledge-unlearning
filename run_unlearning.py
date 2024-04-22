@@ -17,7 +17,7 @@ from torch.utils.data.dataloader import DataLoader
 from torch.utils.data.datapipes.iter.combinatorics import ShufflerIterDataPipe
 
 import transformers
-from transformers import AutoModelForCausalLM, AutoTokenizer, DataCollatorForLanguageModeling, HfArgumentParser, get_scheduler, set_seed
+from transformers import AutoModelForCausalLM, AutoTokenizer, DataCollatorForLanguageModeling, HfArgumentParser, get_scheduler, set_seed, pipeline
 
 import peft
 from peft import LoraConfig, get_peft_model
@@ -356,13 +356,7 @@ for epoch in range(1, int(args.num_train_epochs) + 1):
         logger.info(f"Max steps {args.max_steps} reached")
         break
 
-# Generate an example
-from transformers import pipeline
-prompt = "class DataUpdate(BaseDataUpdate):\n"
-generator = pipeline("text-generation", model=model, tokenizer=tokenizer)
-print(generator(prompt, max_length=256)[0]["generated_text"])
 
-# FIXME
 accelerator.wait_for_everyone()
 if not args.turn_off_lora:
     model = model.merge_and_unload()
@@ -370,3 +364,13 @@ unwrapped_model = accelerator.unwrap_model(model)
 save_dir = model_dir / name
 unwrapped_model.save_pretrained(save_dir, save_function=accelerator.save)
 tokenizer.save_pretrained(save_dir, save_function=accelerator.save)
+
+# Example of generation
+prompt = "class DataUpdate(BaseDataUpdate):\n"
+tokenizer = AutoTokenizer.from_pretrained(save_dir)
+model = AutoModelForCausalLM.from_pretrained(save_dir)
+generator = pipeline("text-generation", model=model, tokenizer=tokenizer)
+outputs = generator(prompt, max_length=256, num_return_sequences=10)
+for i, output in enumerate(outputs):
+    logger.info(f"Generated code {i + 1}")
+    logger.info(output["generated_text"])
