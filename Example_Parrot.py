@@ -10,39 +10,6 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 NUM_PER_PROMPT = 10
 
 
-# def codeparrot(prompts, model_name_or_path, output_paths, num_prompts_per_gen=1):
-#     if type(prompts) == str:
-#         assert type(output_paths) == str
-#         prompts = [prompts]
-#         output_paths = [output_paths]
-#     assert len(prompts) == len(output_paths)
-#     pipe = pipeline("text-generation", model=model_name_or_path, pad_token_id=50256, device=0, batch_size=num_prompts_per_gen)
-
-#     if num_prompts_per_gen > 1 and pipe.model.__class__.__name__.startswith("GPT2"):
-#         # IMPORTANT: Change the configuration of tokenizer to make batching work for GPT2
-#         # cf.
-#         #   https://github.com/huggingface/transformers/issues/21202
-#         # Since gpt2 doesn't have a pad_token
-#         if not pipe.tokenizer.special_tokens_map.get("pad_token"):
-#             pipe.tokenizer.pad_token = pipe.tokenizer.eos_token
-#             # Make sure the padding_side is 'left' (if you open gpt2tokenizer you will find that by default
-#             # the padding_side is 'right')
-#             # cf.
-#             #   https://github.com/huggingface/transformers/issues/18478
-#             #   https://discuss.huggingface.co/t/batch-generation-with-gpt2/1517/2
-#             pipe.tokenizer.padding_side = "left" #For BERT like models use "right"
-
-#     gen_start_time = datetime.now()
-#     outputs = pipe(prompts, num_return_sequences=NUM_PER_PROMPT, max_new_tokens=256)
-#     print(f"Generated {num_prompts_per_gen} prompts * {NUM_PER_PROMPT} files: {(datetime.now() - gen_start_time).total_seconds()} [sec]")
-#     for i, output_path in enumerate(output_paths):
-#         for j in range(NUM_PER_PROMPT):
-#             if "generated_text" in outputs[i][j]:
-#                 output_file = output_path.split('.')[0] + "_" + str(j) + "." + output_path.split('.')[1]
-#                 with open(output_file, 'w') as f:
-#                     f.write(outputs[i][j]["generated_text"])
-
-
 def create_pipeline(model_name_or_path, num_prompts_per_gen=1):
     #pipe = pipeline("text-generation", model=model_name_or_path, pad_token_id=50256, device=0, batch_size=num_prompts_per_gen)
     tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
