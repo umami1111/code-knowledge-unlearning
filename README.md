@@ -1,9 +1,7 @@
-# CodeIPPrompt
+# code-knowledge-unlearning
 
-CodeIPPrompt is developed to assess the extent to which code language models can plagiarize licensed code in its learnt programs. Details regarding this work can be found in the [paper](https://icml.cc/virtual/2023/poster/24354) and project website at [https://sites.google.com/view/codeipprompt](https://sites.google.com/view/codeipprompt). Its key functionalities are enabled by prompt construction from source dode, and similarity measurement based on [JPlag](https://github.com/jplag/JPlag) and [Dolos](https://github.com/dodona-edu/dolos). 
-
-# Abstract
-Recent advances in large language models (LMs) have facilitated their ability to synthesize programming code. However, they have also raised concerns about intellectual property (IP) rights violations. Despite the significance of this issue, it has been relatively less explored. In this paper, we aim to bridge the gap by presenting CodeIPPrompt, a platform for automatic evaluation of the extent to which code language models may reproduce licensed programs. It comprises two key components: prompts constructed from a licensed code database to elicit LMs to generate IP-violating code, and a measurement tool to evaluate the extent of IP violation of code LMs. We conducted an extensive evaluation of existing open-source code LMs and commercial products and revealed the prevalence of IP violations in all these models. We further identified that the root cause is the substantial proportion of training corpus subject to restrictive licenses, resulting from both intentional inclusion and inconsistent license practice in the real world. To address this issue, we also explored potential mitigation strategies, including fine-tuning and dynamic token filtering. Our study provides a testbed for evaluating the IP violation issues of the existing code generation platforms and stresses the need for a better mitigation strategy. 
+- Developing a knowledge unlearning algorithm for code generation models
+- Built on an evaluation framework [CodeIPPrompt](https://sites.google.com/view/codeipprompt/) ([Github](https://github.com/zh1yu4nyu/CodeIPPrompt))
 
 # Installation
 
@@ -39,7 +37,7 @@ At last, the environment settings for code generation can vary for different mod
 
 # Usage
 
-CodeIPPrompt is a evaluation platform consisting of two major components, prompt construction and code generation model evaluation.
+CodeIPPrompt is an evaluation platform consisting of two major components, prompt construction and code generation model evaluation.
 
 ## Prompt Construction
 
@@ -79,28 +77,9 @@ $ python3 results.py codegen2Bmulti
 ```
 
 ## Unlearning
-Prepare a dataset and fine-tunr CodeParrot (Small) in a similar manner to the [training of CodeParrot](https://github.com/huggingface/transformers/blob/main/examples/research_projects/codeparrot/scripts/codeparrot_training.py). **For now, only unlearning loss is considered.**
+Prepare a dataset and fine-tune CodeParrot (Small) in a similar manner to the [training of CodeParrot](https://github.com/huggingface/transformers/blob/main/examples/research_projects/codeparrot/scripts/codeparrot_training.py).
 
 ```
 $ sh prepare_unlearning_datasets.sh
 $ python run_unlearning.py --output_dir output/unlearning --per_device_train_batch_size 2 --gradient_accumulation_steps=32 --learning_rate 5e-04 --weight_decay 0.1 --warmup_steps 10 --max_steps 500
-```
-
-Known issues are:
-
-* Not evaluated even on a validation set because what is a reasnable validation set is unclear
-* If we train a model on paired samples (e.g. pairs of copyrighted and rewritten code) for computiong unlearn and maintain loss, need to modify the dataloader, which currently works on a chunked dataset where each sample is a chunk with the constant length of tokens for computational efficiency
-
-
-# Citation
-
-If you find the platform useful, please cite our work with the following reference:
-```
-@inproceedings{yu2023codeipprompt,
-  title={CodeIPPrompt: Intellectual Property Infringement Assessment of Code Language Models},
-  author={Yu, Zhiyuan and Wu, Yuhao and Zhang, Ning and Wang, Chenguang and Vorobeychik, Yevgeniy and Xiao, Chaowei},
-  booktitle={International conference on machine learning},
-  year={2023},
-  organization={PMLR}
-}
 ```
