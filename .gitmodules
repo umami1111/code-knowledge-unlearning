@@ -1,0 +1,3 @@
+[submodule "human-eval"]
+	path = human-eval
+	url = https://github.com/SYEDM-USA/human-eval.git
